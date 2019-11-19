@@ -1,0 +1,11 @@
+version: "3"
+services:
+  redis-server:
+    image: "joma/redis"
+    command: ["redis-server", "--protected-mode", "no"]
+  visit-counter-fe:
+    restart: "no"
+    image: "joma/visit-counter"
+    build: .
+    ports:
+      - "4001:8081"
