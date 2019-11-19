@@ -1,0 +1,23 @@
+version: "3"
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: "joma/workflow-d/frontend"
+    ports:
+      - "3000:3000"
+    volumes:
+      - /usr/app/node_modules
+      - .:/usr/app
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: ["yarn", "run", "test"]
+    stdin_open: "true"
+    tty: "true"
+    image: "joma/workflow-d/frontend"
+    volumes:
+      - /usr/app/node_modules
+      - .:/usr/app
