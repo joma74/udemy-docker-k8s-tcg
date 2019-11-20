@@ -1,5 +1,8 @@
 FROM node:alpine as builder
 
+# download and install a dependency
+RUN apk add --update procps
+
 WORKDIR /usr/app
 
 COPY ./package.json ./
