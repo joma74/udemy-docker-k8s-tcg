@@ -1,0 +1,14 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t joma74/udemy-docker-k8s-tcg/workflow-d-frontend/dev -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true joma74/udemy-docker-k8s-tcg/workflow-d-frontend/dev yarn run test
+
+notifications:
+  email:
+    recipients:
+      - dev-mails@gmx.net
