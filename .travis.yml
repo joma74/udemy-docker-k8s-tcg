@@ -8,7 +8,7 @@ env:
     - IMAGE_NAME_BASE=joma74/udemy-docker-k8s-tcg/workflow-d-frontend
     - IMAGE_NAME_DEV=${IMAGE_NAME_BASE}/dev
     - IMAGE_NAME_PROD=${IMAGE_NAME_BASE}/prod:${TRAVIS_COMMIT}
-    - IMAGE_REPO=eu.gcr.io/${GCP_PROJECT_ID}/${IMAGE_NAME_PROD}
+    - IMAGE_PROD_ON_REPO=eu.gcr.io/${GCP_PROJECT_ID}/${IMAGE_NAME_PROD}
     - CLOUD_RUN_REGION=europe-west1
     - CLOUD_RUN_SERVICE=joma74-udemy-docker-k8s-tcg-workflow-d-frontend-prod
     - CLOUDSDK_CORE_DISABLE_PROMPTS=1 # prevent gcloud from prompting, see https://cloud.google.com/sdk/gcloud/reference/#--quiet
@@ -27,9 +27,9 @@ script:
   - docker run -e CI=true "${IMAGE_NAME_DEV}" yarn run test
   - |
     set -ex;
-    docker push "${IMAGE_NAME_PROD}" && \
+    docker push "${IMAGE_PROD_ON_REPO}" && \
     gcloud run deploy "${CLOUD_RUN_SERVICE}" \
-      --image="${IMAGE_NAME_PROD}" \
+      --image="${IMAGE_PROD_ON_REPO}" \
       --platform=managed \
       --region="${CLOUD_RUN_REGION}" \
       --allow-unauthenticated;
