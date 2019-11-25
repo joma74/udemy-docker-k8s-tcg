@@ -22,6 +22,8 @@ RUN yarn run build  | tee /var/log/frontend-builder.log
 # is auto started 
 FROM nginx
 
-EXPOSE 80
+ADD gcr.nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 8080
 
 COPY --from=builder /usr/app/build /usr/share/nginx/html
