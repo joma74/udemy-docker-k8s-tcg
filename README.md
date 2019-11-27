@@ -68,11 +68,27 @@ The essentials of what you will be doing are
 - Encrypt the JSON key for authenticating `travisci-deployer`. This must be done in a very travis-specific way - i pondered if this is a) required and b) secure enough. But anyway, the best and proposed, AFAIK only option to handle a secure key `file!` with Travis CI. Jot down the generated `openssl aes...` command. _P.S. Does something with Github access tokens against your Github account, dunno_
 - Now have a look at the [travis.yml](./.travis.yml).
 - Configure the environment variables in the ``env:global` section assigning as jotted down
+
   - GCP_PROJECT_ID your **Project Name**
   - IMAGE_PROD_ON_REPO your **Container Image URL**
   - CLOUD_RUN_REGION your **Location**
   - CLOUD_RUN_SERVICE your **Service Name**
   - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+
+## https://github.com/ahmetb/cloud-run-faq
+
+A complementary site of FAQ to https://cloud.google.com/run/docs.
+
+## https://cloud.google.com/run/docs/reference/container-contract
+
+Especially https://cloud.google.com/run/docs/reference/container-contract#port got me off and made me wonder why. So had to adjust to and crumpy create [gcr.nginx.conf](./gcr.nginx.conf). Okay, my fault, portability reasons, as stated :smiley:
+
+> Listening for requests on PORT
+>
+> The container _must_ listen for requests on 0.0.0.0 _on the port defined by the PORT environment variable_.
+> In Cloud Run container instances, the PORT environment variable _is always set to 8080_, but for portability reasons, your code should not hardcode this value.
+
+# Final results
 
 If everything works out, you should see ~
 
@@ -179,16 +195,3 @@ TBD pic
 - at your then-presented URL
 
 TBD pic
-
-## https://github.com/ahmetb/cloud-run-faq
-
-A complementary site of FAQ to https://cloud.google.com/run/docs.
-
-## https://cloud.google.com/run/docs/reference/container-contract
-
-Especially https://cloud.google.com/run/docs/reference/container-contract#port got me off and made me wonder why. So had to adjust to and crumpy create [gcr.nginx.conf](./gcr.nginx.conf). Okay, my fault, portability reasons, as stated :smiley:
-
-> Listening for requests on PORT
->
-> The container _must_ listen for requests on 0.0.0.0 _on the port defined by the PORT environment variable_.
-> In Cloud Run container instances, the PORT environment variable _is always set to 8080_, but for portability reasons, your code should not hardcode this value.
