@@ -2,6 +2,8 @@ sudo: required
 services:
   - docker
 
+language: generic
+
 env:
   global:
     - GCP_PROJECT_ID=udemy-docker-k8s-tcg-1
@@ -32,11 +34,11 @@ script:
       --image="${IMAGE_PROD_ON_REPO}" \
       --platform=managed \
       --region="${CLOUD_RUN_REGION}" \
-      --allow-unauthenticated;
-      --memory=128Mi
-      --concurreny=2
-      --timeout=5
-      --max-instances=2
+      --allow-unauthenticated; \
+      --memory=128Mi \
+      --concurreny=2 \
+      --timeout=5 \
+      --max-instances=2 \
     set +x
 
 notifications:
