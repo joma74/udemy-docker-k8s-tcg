@@ -104,7 +104,7 @@ Especially https://cloud.google.com/run/docs/reference/container-contract#port g
 
 # Use .travis.yml To Set Your Environment
 
-Motivation is that you probably like to try the `gcloud commands then-issued by Travis CI before on your local workstation. To start with that, one has to prepare the environment - exactly what you have already configured in your [.travis.yml](./travis.yml).
+Motivation is that you probably like to try the `gcloud` commands then-issued by Travis CI before on your local workstation. To start with that, one has to prepare the environment - exactly what you have already configured in your [.travis.yml](./.travis.yml).
 
 This idea implemented in [bin/exporttravistoenv.sh](./bin/exporttravistoenv.sh)
 
