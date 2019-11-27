@@ -76,6 +76,97 @@ The essentials of what you will be doing are
 
 If everything works out, you should see ~
 
+- at your Travis CI Run
+
+```sh
+...
+3.02s$ sudo systemctl start docker
+git.checkout
+...
+Setting environment variables from repository settings
+$ export encrypted_9144e8bd33c7_key=[secure]
+$ export encrypted_9144e8bd33c7_iv=[secure]
+Setting environment variables from .travis.yml
+$ export GCP_PROJECT_ID=udemy-docker-k8s-tcg-1
+$ export IMAGE_NAME_BASE=joma74/udemy-docker-k8s-tcg/workflow-d-frontend
+$ export IMAGE_NAME_DEV=${IMAGE_NAME_BASE}/dev
+$ export IMAGE_NAME_PROD=${IMAGE_NAME_BASE}/prod
+$ export IMAGE_PROD_ON_REPO=eu.gcr.io/${GCP_PROJECT_ID}/${IMAGE_NAME_PROD}
+$ export CLOUD_RUN_REGION=europe-west1
+$ export CLOUD_RUN_SERVICE=joma74-udemy-docker-k8s-tcg-workflow-d-frontend-prod
+$ export CLOUDSDK_CORE_DISABLE_PROMPTS=1
+...
+before_install.1
+0.02s$ openssl aes-256-cbc -K $encrypted_9144e8bd33c7_key -iv $encrypted_9144e8bd33c7_iv -in travisci-deployer_udemy-docker-k8s-tcg-1_key.json.enc -out travisci-deployer_udemy-docker-k8s-tcg-1_key.json -d
+before_install.2
+16.49s$ curl https://sdk.cloud.google.com | bash > /dev/null
+before_install.3
+0.01s$ source "$HOME/google-cloud-sdk/path.bash.inc"
+before_install.4
+0.56s$ gcloud auth activate-service-account --key-file=travisci-deployer_udemy-docker-k8s-tcg-1_key.json
+before_install.5
+0.60s$ gcloud auth configure-docker
+before_install.6
+0.67s$ gcloud config set project "${GCP_PROJECT_ID}"
+before_install.7
+66.15s$ docker build -t ${IMAGE_NAME_DEV} -f Dockerfile.dev .
+before_install.8
+67.49s$ docker build -t "${IMAGE_PROD_ON_REPO}" .
+No Gemfile found, skipping bundle install
+3.41s$ docker run -e CI=true "${IMAGE_NAME_DEV}" yarn run test
+yarn run v1.19.1
+$ react-scripts test
+PASS src/App.test.js
+  ✓ renders without crashing (25ms)
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        1.839s
+Ran all test suites.
+Done in 2.48s.
+The command "docker run -e CI=true "${IMAGE_NAME_DEV}" yarn run test" exited with 0.
+26.81s$ set -ex;
+docker push "${IMAGE_PROD_ON_REPO}" && \
+gcloud run deploy "${CLOUD_RUN_SERVICE}" \
+  --image="${IMAGE_PROD_ON_REPO}" \
+  --platform=managed \
+  --region="${CLOUD_RUN_REGION}" \
+  --allow-unauthenticated;
+set +x
+++docker push eu.gcr.io/udemy-docker-k8s-tcg-1/joma74/udemy-docker-k8s-tcg/workflow-d-frontend/prod
+The push refers to repository [eu.gcr.io/udemy-docker-k8s-tcg-1/joma74/udemy-docker-k8s-tcg/workflow-d-frontend/prod]
+f40526103abd: Preparing
+356c2836df31: Preparing
+4fc1aa8003a3: Preparing
+5fb987d2e54d: Preparing
+831c5620387f: Preparing
+831c5620387f: Layer already exists
+5fb987d2e54d: Layer already exists
+4fc1aa8003a3: Layer already exists
+356c2836df31: Pushed
+f40526103abd: Pushed
+latest: digest: sha256:1706099e042598789861f1d9416eed41cd5dbba0a14b75fa28eae3f8b4a089fa size: 1365
+++gcloud run deploy joma74-udemy-docker-k8s-tcg-workflow-d-frontend-prod --image=eu.gcr.io/udemy-docker-k8s-tcg-1/joma74/udemy-docker-k8s-tcg/workflow-d-frontend/prod --platform=managed --region=europe-west1 --allow-unauthenticated
+Deploying container to Cloud Run service [joma74-udemy-docker-k8s-tcg-workflow-d-frontend-prod] in project [udemy-docker-k8s-tcg-1] region [europe-west1]
+Deploying...
+Setting IAM Policy..........................done
+Creating Revision.....................................................................done
+Routing traffic.............................................................................done
+Done.
+Service [joma74-udemy-docker-k8s-tcg-workflow-d-frontend-prod] revision [joma74-udemy-docker-k8s-tcg-workflow-d-frontend-prod-00006-piz] has been deployed and is serving 100 percent of traffic at https://joma74-udemy-docker-k8s-tcg-workflow-d-frontend-p-3j5fxfw6ia-ew.a.run.app
+++set +x
+The command "set -ex;
+docker push "${IMAGE_PROD_ON_REPO}" && \
+gcloud run deploy "${CLOUD_RUN_SERVICE}" \
+  --image="${IMAGE_PROD_ON_REPO}" \
+  --platform=managed \
+  --region="${CLOUD_RUN_REGION}" \
+  --allow-unauthenticated;
+set +x
+" exited with 0.
+Done. Your build exited with 0.
+```
+
 - at your Google Cloud Registry
 
 <img src="./docs/GCR_SS.png" alt="Google Cloud Registry"
