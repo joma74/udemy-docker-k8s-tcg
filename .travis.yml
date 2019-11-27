@@ -34,11 +34,12 @@ script:
       --image="${IMAGE_PROD_ON_REPO}" \
       --platform=managed \
       --region="${CLOUD_RUN_REGION}" \
-      --allow-unauthenticated; \
+      --allow-unauthenticated \
       --memory=128Mi \
       --concurreny=2 \
       --timeout=5 \
       --max-instances=2 \
+      ;
     set +x
 
 notifications:
