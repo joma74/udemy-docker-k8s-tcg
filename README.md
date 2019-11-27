@@ -207,13 +207,15 @@ Done. Your build exited with 0.
 
 - at your Google Cloud Registry
 
-<img src="./docs/GCR_SS.png" alt="Google Cloud Registry"
-	title="Google Cloud Registry" width="1000" height="auto" />
+<img src="./docs/GCRegistry_SS.png" alt="Google Cloud Registry"
+	title="Google Cloud Registry Screenshot" width="1000" height="auto" />
 
 - at your Google Cloud Run site
 
-TBD pic
+<img src="./docs/GCRun_SS.png" alt="Google Cloud Run"
+	title="Google Cloud Run Screenshot" width="1000" height="auto" />
 
 - at your then-presented URL
 
-TBD pic
+<img src="./docs/ReactOnGCR_SS.png" alt="React On Google Cloud Run"
+	title="React On Google Cloud Run" width="500" height="auto" />
