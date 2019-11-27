@@ -11,7 +11,7 @@ Is about the standard create-scaffolded React app that will be containerized, bu
 
 ## Project's CI/CD Concept
 
-Notice that AWS Hosting is alternatively done by Google Cloud Run
+Notice that AWS Hosting is alternatively done with Google Cloud Run
 
 <img src="./docs/workflow-d-frontend-CICD-concept.png" alt="Project's CI/CD Concept"
 	title="Project's CI/CD Concept Screenshot" width="1000" height="auto" />
