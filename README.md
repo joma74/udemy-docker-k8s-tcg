@@ -88,6 +88,28 @@ Especially https://cloud.google.com/run/docs/reference/container-contract#port g
 > The container _must_ listen for requests on 0.0.0.0 _on the port defined by the PORT environment variable_.
 > In Cloud Run container instances, the PORT environment variable _is always set to 8080_, but for portability reasons, your code should not hardcode this value.
 
+# Use .travis.yml To Set Your Environment
+
+Motivation is that you probably like to try the `gcloud commands then-issued by Travis CI before on your local workstation. To start with that, one has to prepare the environment - exactly what you have already configured in your [.travis.yml](./travis.yml).
+
+This idea implemented in [bin/exporttravistoenv.sh](./bin/exporttravistoenv.sh)
+
+Prerequired install to running this is http://mikefarah.github.io/yq/read/
+
+```sh
+sudo add-apt-repository ppa:rmescandon/yq
+sudo apt update
+sudo apt install yq -y
+```
+
+Usage is then to execute in your terminal
+
+```sh
+source ./bin/exporttravistoenv.sh
+```
+
+and your environment is ready to go analogous with `gcloud` commands.
+
 # Final results
 
 If everything works out, you should see ~
