@@ -55,6 +55,8 @@ Walks you through a build on Travis CI and how to deploy the container to Google
   - Review your inputs and jot down the **Container Image URL**, **Location** and **Service Name**.
 - Activate "Create"
 
+_P.S All those options will be set later on using [gcloud API deploy parameters](https://cloud.google.com/sdk/gcloud/reference/run/deploy) via [.travis.yml](./.travis.yml)_
+
 ### Prepare A Travis Account
 
 - Register a travis-ci.org account by signing in via your Github account, giving permission to access your repos
@@ -78,7 +80,7 @@ The essentials of what you will be doing are
 
 - Login via `travis login --org`
 - Encrypt the JSON key for authenticating `travisci-deployer`. This must be done in a very travis-specific way - i pondered if this is a) required and b) secure enough. But anyway, the best and proposed, AFAIK only option to handle a secure key `file!` with Travis CI. Jot down the generated `openssl aes...` command. _P.S. Does something with Github access tokens against your Github account, dunno_
-- Now have a look at the [travis.yml](./.travis.yml).
+- Now have a look at the [.travis.yml](./.travis.yml).
 - Configure the environment variables in the ``env:global` section assigning as jotted down
 
   - GCP_PROJECT_ID your **Project Name**
