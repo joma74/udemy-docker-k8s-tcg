@@ -1,19 +1,19 @@
-[![Build Status](https://travis-ci.org/joma74/udemy-docker-k8s-tcg.svg?branch=workflow-d-frontend)](https://travis-ci.org/joma74/udemy-docker-k8s-tcg)
+# Fibonacci Calc
 
-# Workflow D Frontend
+TBD
 
-Is about the standard create-scaffolded React app that will be containerized, built on Travis CI, pushed to Google Cloud Registry and run inside Google Cloud Run.
+## Project's Development Environment Concept
 
-## Project's Production Environment Concept
+<img src="./docs/fibonacci-calc-devenv-concept.png" alt="Project's Dev Environment Concept"
+	title="Project's Dev Environment Concept Screenshot" width="1000" height="auto" />
 
-<img src="./docs/workflow-d-frontend-prodenv-concept.png" alt="Project's Production Environment Concept"
-	title="Project's Production Environment ConceptScreenshot" width="1000" height="auto" />
+## Project's Flow Concept
+
+<img src="./docs/fibonacci-calc-flow-concept.png" alt="Project's Flow Concept"
+	title="Project's Flow Concept Screenshot" width="700" height="auto" />
 
 ## Project's CI/CD Concept
 
-Notice that AWS Hosting is alternatively done with Google Cloud Run
-
-<img src="./docs/workflow-d-frontend-CICD-concept.png" alt="Project's CI/CD Concept"
-	title="Project's CI/CD Concept Screenshot" width="1000" height="auto" />
+TBD Pic Project's CI/CD Concept Screenshot
 
 ## Build Commands
