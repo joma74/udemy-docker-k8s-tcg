@@ -1,6 +1,17 @@
 {
-  "name": "fibonacci-calc-worker",
-  "version": "0.0.1",
-  "main": "index.js",
-  "license": "MIT"
+	"name": "fibonacci-calc-worker",
+	"version": "0.0.1",
+	"main": "index.js",
+	"license": "MIT",
+	"scripts": {
+		"start": "DEBUG=* node index.js",
+		"dev": "nodemon"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.1"
+	},
+	"dependencies": {
+		"debug": "^4.1.1",
+		"redis": "^2.8.0"
+	}
 }
