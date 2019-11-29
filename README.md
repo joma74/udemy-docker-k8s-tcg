@@ -17,3 +17,10 @@ TBD
 TBD Pic Project's CI/CD Concept Screenshot
 
 ## Build Commands
+
+## DNK
+
+### NPM debug - Use Log Message Parameter Substitution Formatters
+See
+- https://www.npmjs.com/package/debug#formatters
+- https://nodejs.org/api/util.html#util_util_inspect_object_options
