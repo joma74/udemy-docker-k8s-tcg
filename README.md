@@ -23,4 +23,4 @@ TBD Pic Project's CI/CD Concept Screenshot
 ### NPM debug - Use Log Message Parameter Substitution Formatters
 See
 - https://www.npmjs.com/package/debug#formatters
-- https://nodejs.org/api/util.html#util_util_inspect_object_options
+- https://nodejs.org/api/util.html#util_util_format_format_args
