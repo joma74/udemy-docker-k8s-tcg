@@ -4,8 +4,8 @@
 	"main": "src/index.js",
 	"license": "MIT",
 	"scripts": {
-		"start": "DEBUG=* node src/index.js",
-		"dev": "nodemon"
+		"start": "DEBUG_COLORS=true DEBUG=* node src/index.js",
+		"dev": "nodemon --exec yarn start"
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
