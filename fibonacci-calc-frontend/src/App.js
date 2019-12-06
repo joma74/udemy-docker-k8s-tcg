@@ -1,5 +1,4 @@
 import React from "react"
-import logo from "./logo.svg"
 import "./App.css"
 import { BrowserRouter as Router, Route, Link } from "react-router-dom"
 import OtherPage from "./OtherPage"
@@ -10,12 +9,11 @@ function App() {
 		<Router>
 			<div className="App">
 				<header className="App-header">
-					<img src={logo} className="App-logo" alt="logo" />
 					<h1>Welcome to the very distributed Fibonacci calculator</h1>
 					<Link to="/">Home</Link>
 					<Link to="/otherpage">Other Page</Link>
 				</header>
-				<div>
+				<div className="App-body">
 					<Route exact path="/" component={Fib}></Route>
 					<Route exact path="/otherpage" component={OtherPage}></Route>
 				</div>
