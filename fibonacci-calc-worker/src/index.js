@@ -36,7 +36,7 @@ function fib(index) {
 }
 
 redisSubscriber.on("message", (channel, message) => {
-	debug("Recieved on channel '%s'")
+	debug("Recieved on channel '%s'", message)
 	/**
 	 * See https://redis.io/commands/hset
 	 * Set the field in the hash(variadic:map) stored at key to value. If
