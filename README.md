@@ -1,6 +1,18 @@
 # Fibonacci Calc
 
-TBD
+Inside fibonacci-calc-parent do
+
+```sh
+docker-compose up
+```
+
+There are issues if the startup of the images does not happen in some order. If this happens, stop the cluster (CTRL+C) and relaunch above command again :smirk_cat:
+
+Then open
+http://localhost:3050/
+
+<img src="./docs/fibonacci-calc-frontend-screenshot.png" alt="Project's Frontend Screenshot"
+	title="Project's Frontend Screenshot" width="1000" height="auto" />
 
 ## Project's Development Environment Concept
 
