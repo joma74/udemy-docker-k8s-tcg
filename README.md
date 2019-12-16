@@ -60,3 +60,15 @@ See
 
 - https://www.npmjs.com/package/debug#formatters
 - https://nodejs.org/api/util.html#util_util_format_format_args
+
+### Install Pgadmin4
+
+See https://wiki.postgresql.org/wiki/Apt
+
+```sh
+sudo apt-get install curl ca-certificates gnupg
+curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+sudo apt-get update
+sudo apt-get install pgadmin4
+```
