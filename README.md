@@ -5,13 +5,13 @@ Inside fibonacci-calc-parent do
 for production
 
 ```sh
-docker-compose up
+docker-compose up --build
 ```
 
 for development
 
 ```sh
-docker-compose -f docker-compose-dev.yaml up
+docker-compose -f docker-compose-dev.yaml up --build
 ```
 
 _As opposed to production, the development mounts the appropriate source folders as volumes into the container._
@@ -24,7 +24,7 @@ http://localhost:3050/
 <img src="./docs/fibonacci-calc-frontend-screenshot.png" alt="Project's Frontend Screenshot"
 	title="Project's Frontend Screenshot" width="1000" height="auto" />
 
-## Project's Development Environment Concept
+## Project's Environment Concept
 
 <img src="./docs/fibonacci-calc-devenv-concept.png" alt="Project's Dev Environment Concept"
 	title="Project's Dev Environment Concept Screenshot" width="1000" height="auto" />
