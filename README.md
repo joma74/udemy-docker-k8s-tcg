@@ -34,6 +34,11 @@ http://localhost:3050/
 <img src="./docs/fibonacci-calc-flow-concept.png" alt="Project's Flow Concept"
 	title="Project's Flow Concept Screenshot" width="700" height="auto" />
 
+## Project's K8s Concept
+
+<img src="./docs/fibonacci-calc-k8s-concept.png" alt="Project's K8s Concept"
+	title="Project's K8s Concept Screenshot" width="700" height="auto" />
+
 ## Project's CI/CD Concept
 
 TBD Pic Project's CI/CD Concept Screenshot
@@ -43,37 +48,53 @@ TBD Pic Project's CI/CD Concept Screenshot
 ### For Production
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/prod/frontend -f fibonacci-calc-frontend/Dockerfile fibonacci-calc-frontend/
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/frontend/prod -f fibonacci-calc-frontend/Dockerfile fibonacci-calc-frontend/
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/prod/server -f fibonacci-calc-server/Dockerfile fibonacci-calc-server/
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/server/prod -f fibonacci-calc-server/Dockerfile fibonacci-calc-server/
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/prod/worker -f fibonacci-calc-worker/Dockerfile fibonacci-calc-worker/
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/worker/prod -f fibonacci-calc-worker/Dockerfile fibonacci-calc-worker/
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/prod/proxy -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/prox/prod -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
 ```
 
 ### For Development
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/dev/frontend -f fibonacci-calc-frontend/Dockerfile.dev fibonacci-calc-frontend/
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/frontend/dev -f fibonacci-calc-frontend/Dockerfile.dev fibonacci-calc-frontend/
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/dev/server -f fibonacci-calc-server/Dockerfile.dev fibonacci-calc-server/
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/server/dev -f fibonacci-calc-server/Dockerfile.dev fibonacci-calc-server/
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/dev/worker -f fibonacci-calc-worker/Dockerfile.dev fibonacci-calc-worker/
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/worker/dev -f fibonacci-calc-worker/Dockerfile.dev fibonacci-calc-worker/
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/dev/proxy -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/proxy/dev -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
+```
+
+## Helpers
+
+Rollout deployment after docker image update
+
+```sh
+kubectl rollout restart deployment server-deployment
+```
+
+Check on status
+
+```sh
+kubectl get deployments
+kubectl get pods
+kubectl get services
 ```
 
 ## Issue Parade
@@ -125,7 +146,7 @@ sudo apt-get update
 sudo apt-get install pgadmin4
 ```
 
-### How To Reset Anonymus Volumes On Compose Up
+### How To Reset Anonymus Volumes On Docker Compose Up
 
 Docker knows three kinds of volumes(explained in https://github.com/docker/compose/issues/2127#issuecomment-255012324). For anonymous volumes https://github.com/docker/compose/issues/2127#issuecomment-254987670 explains it's usage for a MySQL image.
 
@@ -137,3 +158,32 @@ https://docs.docker.com/compose/reference/up/
     -V, --renew-anon-volumes   Recreate anonymous volumes instead of retrieving
                                data from the previous containers
 ```
+
+### K8s Pods vs Nodes
+
+<img src="./docs/NodeVsPodVs.svg" alt="K8s NodeVsPodVs" style="background-color: Snow;"
+	title="Project's K8s Concept Screenshot" width="700" height="auto" />
+
+A Pod can run one or more closely related containers.
+
+Pods run on Nodes.
+
+Each Node is managed by the Master. A Node is a worker machine in Kubernetes and may be a VM or a physical machine.
+
+### K8s Deployments vs Pods vs Services
+
+#### Services
+
+- ClusterIP: Exposes a set of pods to other objects in the cluster
+- NodePort: Exposes a set of pods to other objects outside of the cluster
+
+### K8s port vs targetPort vs nodePort vs containerPort
+
+- nodePort: to access service from outside of the cluster [ Service/NodePort ]
+- port: to access service from inside of the cluster [ Service/NodePort, Service/ClusterIP ]
+- targetPort: where service runs inside [ Service/NodePort, Service/ClusterIP ]
+- containerPort: to access service from inside of the cluster [ Deployment/Containers ]
+
+## K8s ReplicaSet or replicas
+
+- creates n replicated Pods, indicated by the replicas field
