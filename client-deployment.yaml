@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      component: web
+  template:
+    metadata:
+      labels:
+        component: web
+    spec:
+      containers:
+        - name: client
+          image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/frontend:latest
+          imagePullPolicy: Never
+          resources:
+            limits:
+              memory: "335Mi"
+              cpu: "1" # 0,1 cpu
+          ports:
+            - containerPort: 3000
