@@ -15,4 +15,7 @@ RUN yarn install | tee /var/log/install.log
 COPY ./src ./src
 COPY ./public ./public
 
+# do not open a browser on start
+ENV BROWSER=none
+
 CMD ["yarn", "run", "start"]
