@@ -2,33 +2,33 @@ version: "3"
 services:
   postgres:
     image: "postgres:latest"
-    container_name: fibonacci-calc_prod_postgres
+    container_name: fibonacci-calc_postgres
     ports:
       - "5433:5432"
   redis:
     image: "redis:latest"
-    container_name: fibonacci-calc_prod_redis
+    container_name: fibonacci-calc_redis_prod
   proxy:
-    image: joma74_udemy-docker-k8s-tcg_fibonacci-calc_prod_proxy:latest
+    image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/proxy/prod:latest
     build:
       dockerfile: Dockerfile
       context: ./fibonacci-calc-proxy
     depends_on:
       - api
       - frontend
-    container_name: fibonacci-calc_prod_proxy
+    container_name: fibonacci-calc_proxy_prod
     restart: always
     ports:
       - "3050:80"
   api:
-    image: joma74_udemy-docker-k8s-tcg_fibonacci-calc_prod_api:latest
+    image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/api/prod:latest
     build:
       dockerfile: Dockerfile
       context: ./fibonacci-calc-server
     depends_on:
       - postgres
       - redis
-    container_name: fibonacci-calc_prod_api
+    container_name: fibonacci-calc_api_prod
     # explore to name service "server" but be reachable via "api"
     # networks:
     #  default:
@@ -43,19 +43,19 @@ services:
       - PGDATABASE=postgres
       - PGPASSWORD=postgres_password
   frontend:
-    image: joma74_udemy-docker-k8s-tcg_fibonacci-calc_prod_frontend:latest
+    image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/frontend/prod:latest
     build:
       dockerfile: Dockerfile
       context: ./fibonacci-calc-frontend
-    container_name: fibonacci-calc_prod_frontend
+    container_name: fibonacci-calc_frontend_prod
     depends_on:
       - api
   worker:
-    image: joma74_udemy-docker-k8s-tcg_fibonacci-calc_prod_worker:latest
+    image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/worker/prod:latest
     build:
       dockerfile: Dockerfile
       context: ./fibonacci-calc-worker
-    container_name: fibonacci-calc_prod_worker
+    container_name: fibonacci-calc_worker_prod
     depends_on:
       - redis
     environment:
