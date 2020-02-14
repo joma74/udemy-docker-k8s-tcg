@@ -2,9 +2,19 @@
 
 Inside fibonacci-calc-parent do
 
+for production
+
 ```sh
 docker-compose up
 ```
+
+for development
+
+```sh
+docker-compose -f docker-compose-dev.yaml up
+```
+
+_As opposed to production, the development mounts the appropriate source folders as volumes into the container._
 
 There are issues if the startup of the images does not happen in some order. If this happens, stop the cluster (CTRL+C) and relaunch above command again :smirk_cat:
 
@@ -30,16 +40,40 @@ TBD Pic Project's CI/CD Concept Screenshot
 
 ## Build Commands
 
+### For Production
+
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/frontend -f fibonacci-calc-frontend/Dockerfile.dev fibonacci-calc-frontend/
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/prod/frontend -f fibonacci-calc-frontend/Dockerfile fibonacci-calc-frontend/
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/server -f fibonacci-calc-server/Dockerfile.dev fibonacci-calc-server/
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/prod/server -f fibonacci-calc-server/Dockerfile fibonacci-calc-server/
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/server -f fibonacci-calc-server/Dockerfile.dev fibonacci-calc-server/
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/prod/worker -f fibonacci-calc-worker/Dockerfile fibonacci-calc-worker/
+```
+
+```sh
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/prod/proxy -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
+```
+
+### For Development
+
+```sh
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/dev/frontend -f fibonacci-calc-frontend/Dockerfile.dev fibonacci-calc-frontend/
+```
+
+```sh
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/dev/server -f fibonacci-calc-server/Dockerfile.dev fibonacci-calc-server/
+```
+
+```sh
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/dev/worker -f fibonacci-calc-worker/Dockerfile.dev fibonacci-calc-worker/
+```
+
+```sh
+docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/dev/proxy -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
 ```
 
 ## Issue Parade
