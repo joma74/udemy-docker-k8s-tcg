@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-deployment
+spec:
+  replicas: 3
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      component: server
+  template:
+    metadata:
+      labels:
+        component: server
+    spec:
+      containers:
+        - name: server
+          image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/server/prod:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
