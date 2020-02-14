@@ -50,6 +50,12 @@ See https://github.com/facebook/create-react-app/issues/7782 for nginx changes, 
 
 ## DKK
 
+### Default Port Of React Dev Server
+
+See https://create-react-app.dev/docs/advanced-configuration/
+
+> The default port used by Express is 3000, the same default port used by ReactJS development server.
+
 ### Docker logs not showing colors
 
 See https://stackoverflow.com/a/38508869/3274229
