@@ -5,13 +5,13 @@ Inside fibonacci-calc-parent do
 for production
 
 ```sh
-docker-compose up --build
+docker-compose up --build  --renew-anon-volumes
 ```
 
 for development
 
 ```sh
-docker-compose -f docker-compose-dev.yaml up --build
+docker-compose -f docker-compose-dev.yaml up --build  --renew-anon-volumes
 ```
 
 _As opposed to production, the development mounts the appropriate source folders as volumes into the container._
@@ -82,7 +82,7 @@ docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/dev/proxy -f fibonacc
 
 See https://github.com/facebook/create-react-app/issues/7782 for nginx changes, but error persists. Further https://github.com/facebook/create-react-app/pull/7988 should close this up.
 
-## DKK
+## DNK
 
 ### Default Port Of React Dev Server
 
@@ -123,4 +123,17 @@ curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 sudo apt-get update
 sudo apt-get install pgadmin4
+```
+
+### How To Reset Anonymus Volumes On Compose Up
+
+Docker knows three kinds of volumes(explained in https://github.com/docker/compose/issues/2127#issuecomment-255012324). For anonymous volumes https://github.com/docker/compose/issues/2127#issuecomment-254987670 explains it's usage for a MySQL image.
+
+Later on https://github.com/docker/compose/issues/2127#issuecomment-428392434 uncovers the presence of the option for recreateing anonymous volumes.
+
+https://docs.docker.com/compose/reference/up/
+
+```
+    -V, --renew-anon-volumes   Recreate anonymous volumes instead of retrieving
+                               data from the previous containers
 ```
