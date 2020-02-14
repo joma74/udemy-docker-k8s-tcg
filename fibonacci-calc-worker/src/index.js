@@ -27,6 +27,7 @@ const redisCommander = redis.createClient({
 const redisSubscriber = redisCommander.duplicate()
 
 /**
+ * Implements the algorithmic for fibonacci number calculation
  *
  * @param {number} index
  */
