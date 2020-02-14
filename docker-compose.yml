@@ -2,33 +2,36 @@ version: "3"
 services:
   postgres:
     image: "postgres:latest"
+    container_name: joma74_udemy-docker-k8s-tcg_fibonacci-calc_prod_postgres
     ports:
       - "5433:5432"
   redis:
     image: "redis:latest"
+    container_name: joma74_udemy-docker-k8s-tcg_fibonacci-calc_prod_redis
   proxy:
     build:
       dockerfile: Dockerfile
       context: ./fibonacci-calc-proxy
+    depends_on:
+      - api
+      - frontend
+    container_name: joma74_udemy-docker-k8s-tcg_fibonacci-calc_prod_proxy
     restart: always
     ports:
       - "3050:80"
-    volumes:
-      - ./fibonacci-calc-proxy/nginx.conf:/etc/nginx/conf.d/default.conf # do mount this over
   api:
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
       context: ./fibonacci-calc-server
+    depends_on:
+      - postgres
+      - redis
+    container_name: joma74_udemy-docker-k8s-tcg_fibonacci-calc_prod_api
     # explore to name service "server" but be reachable via "api"
     # networks:
     #  default:
     #    aliases:
     #      - api
-    volumes:
-      - /usr/app/node_modules # do NOT mount this over
-      - ./fibonacci-calc-server/package.json:/usr/app/package.json # do mount this over
-      - ./fibonacci-calc-server/yarn.lock:/usr/app/yarn.lock # do mount this over
-      - ./fibonacci-calc-server/src:/usr/app/src # do mount this over
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -39,23 +42,18 @@ services:
       - PGPASSWORD=postgres_password
   frontend:
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
       context: ./fibonacci-calc-frontend
-    volumes:
-      - /usr/app/node_modules # do NOT mount this over
-      - ./fibonacci-calc-frontend/package.json:/usr/app/package.json # do mount this over
-      - ./fibonacci-calc-frontend/yarn.lock:/usr/app/yarn.lock # do mount this over
-      - ./fibonacci-calc-frontend/src:/usr/app/src # do mount this over
-      - ./fibonacci-calc-frontend/public:/usr/app/public # do mount this over
+    container_name: joma74_udemy-docker-k8s-tcg_fibonacci-calc_prod_frontend
+    depends_on:
+      - api
   worker:
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
       context: ./fibonacci-calc-worker
-    volumes:
-      - /usr/app/node_modules # do NOT mount this over
-      - ./fibonacci-calc-worker/package.json:/usr/app/package.json # do mount this over
-      - ./fibonacci-calc-worker/yarn.lock:/usr/app/yarn.lock # do mount this over
-      - ./fibonacci-calc-worker/src:/usr/app/src # do mount this over
+    depends_on:
+      - redis
+    container_name: joma74_udemy-docker-k8s-tcg_fibonacci-calc_prod_worker
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
