@@ -48,6 +48,16 @@ TBD Pic Project's CI/CD Concept Screenshot
 ### For Production
 
 ```sh
+docker pull redis:latest
+docker image tag redis:latest joma74/udemy-docker-k8s-tcg/fibonacci-calc/redis/prod
+```
+
+```sh
+docker pull postgres:latest
+docker image tag postgres:latest joma74/udemy-docker-k8s-tcg/fibonacci-calc/postgres/prod
+```
+
+```sh
 docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/frontend/prod -f fibonacci-calc-frontend/Dockerfile fibonacci-calc-frontend/
 ```
 
@@ -66,6 +76,16 @@ docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/prox/prod -f fibonacc
 ### For Development
 
 ```sh
+docker pull redis:latest
+docker image tag redis:latest joma74/udemy-docker-k8s-tcg/fibonacci-calc/redis/dev
+```
+
+```sh
+docker pull postgres:latest
+docker image tag postgres:latest joma74/udemy-docker-k8s-tcg/fibonacci-calc/postgres/dev
+```
+
+```sh
 docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/frontend/dev -f fibonacci-calc-frontend/Dockerfile.dev fibonacci-calc-frontend/
 ```
 
@@ -81,15 +101,15 @@ docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/worker/dev -f fibonac
 docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/proxy/dev -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
 ```
 
-## Helpers
+## For Support
 
-Rollout deployment after docker image update
+Rollout deployment after docker image update. Unfortunately this requires a deployment's config `imagePullPolicy: IfNotPresent` or `imagePullPolicy: Never` to not fail on image pull in the first way.
 
 ```sh
 kubectl rollout restart deployment server-deployment
 ```
 
-Check on status
+Check on status of different k8s objects
 
 ```sh
 kubectl get deployments
