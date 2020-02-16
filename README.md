@@ -125,6 +125,12 @@ See https://github.com/facebook/create-react-app/issues/7782 for nginx changes, 
 
 ## DNK
 
+### POSTGRES replies on startup with "Error: Database is uninitialized and superuser password is not specified"
+
+One must specify a environment variable of `POSTGRES_PASSWORD` on startup
+
+See https://github.com/docker-library/postgres/issues/456
+
 ### Default Port Of React Dev Server
 
 See https://create-react-app.dev/docs/advanced-configuration/
