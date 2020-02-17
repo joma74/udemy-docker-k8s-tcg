@@ -210,6 +210,106 @@ Each Node is managed by the Master. A Node is a worker machine in Kubernetes and
 - targetPort: where service runs inside [ Service/NodePort, Service/ClusterIP ]
 - containerPort: to access service from inside of the cluster [ Deployment/Containers ]
 
-## K8s ReplicaSet or replicas
+### K8s ReplicaSet or replicas
 
 - creates n replicated Pods, indicated by the replicas field
+
+### Access Kubeadm In Minikube
+
+```sh
+$ ll ~/.minikube/cache/v1.17.0/
+total 147376
+drwxrwxr-x 2 joma joma      4096 Dez 16 00:37 ./
+drwxrwxr-x 5 joma joma      4096 Dez 16 00:36 ../
+-rwxr-xr-x 1 joma joma  39342080 Dez 16 00:36 kubeadm*
+-rwxr-xr-x 1 joma joma 111560216 Dez 16 00:37 kubelet*
+
+$ ~/.minikube/cache/v1.17.0/kubeadm config images list
+W0217 00:25:13.898021    4139 validation.go:28] Cannot validate kube-proxy config - no validator is available
+W0217 00:25:13.898186    4139 validation.go:28] Cannot validate kubelet config - no validator is available
+k8s.gcr.io/kube-apiserver:v1.17.3
+k8s.gcr.io/kube-controller-manager:v1.17.3
+k8s.gcr.io/kube-scheduler:v1.17.3
+k8s.gcr.io/kube-proxy:v1.17.3
+k8s.gcr.io/pause:3.1
+k8s.gcr.io/etcd:3.4.3-0
+k8s.gcr.io/coredns:1.6.5
+```
+
+See https://codefarm.me/2018/12/27/intall-minikube-with-kubeadm-on-debian/
+
+### Where Is Kube-apiserver CLI In Minikube?
+
+> kube-apiserver binary actually resides on particular container within K8s api-server Pod, therefore you can free to check it, just execute /bin/sh on that Pod
+>
+> ```sh
+> $ kubectl exec -it $(kubectl get pods -n kube-system| grep kube-apiserver|awk '{print $1}') -n kube-system -- /bin/sh
+>
+> # kube-apiserver -h
+>
+> The Kubernetes API server validates and configures data
+> for the api objects which include pods, services, replicationcontrollers, and
+>
+> You might be able to propagate the desired enable-admission-plugins through kube-apiserver command inside this Pod, however any modification will disappear once api-server Pod re-spawns, i.e. master node reboot, etc.
+> The essential api-server config located in `/etc/kubernetes/manifests/kube-apiserver.yaml`. Node agent kubelet controls kube-apiserver runtime Pod, and each time when health checks are not successful kubelet sents a request to K8s Scheduler in order to re-create this affected Pod from primary kube-apiserver.yaml file.
+> ...
+> ```
+
+See https://stackoverflow.com/a/56545286
+
+```sh
+$ minikube ssh
+$ sudo cat /etc/kubernetes/manifests/kube-apiserver.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    component: kube-apiserver
+    tier: control-plane
+  name: kube-apiserver
+  namespace: kube-system
+spec:
+...
+    - --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,NodeRestriction,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota
+...
+```
+
+> The kube-apiserver is running in your kube-apiserver-< example.com > container. The application does not have a get method at the moment to obtain the enabled admission plugins, but you can get the startup parameters from its command line.
+
+```sh
+$ kubectl -n kube-system exec kube-apiserver-minikube -- sed 's/--/\n/g' /proc/1/cmdline
+...
+enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,NodeRestriction,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,ResourceQuota
+...
+```
+
+See https://stackoverflow.com/a/55220534
+
+### How To Configure Kube-apiserver In Minikube
+
+> The Kubernetes API server (Kube-apiserver) validates and configures data for the api objects which include pods, services, replicationcontrollers, and others. The API Server services REST operations and provides the frontend to the cluster’s shared state through which all other components interact.
+>
+> Minikube has a “configurator” feature that allows users to configure the Kubernetes components with arbitrary values. To use this feature, you can use the `–extra-config` flag on the minikube start command.
+>
+> `minikube start --extra-config=apiserver.anonymous-auth=false`
+
+See https://evalle.xyz/posts/configure-kube-apiserver-in-minikube/
+
+### How To Do File Sync In Minikube
+
+> Place files to be synced in `$MINIKUBE_HOME/files`
+>
+> For example, running the following will result in the deployment of a custom /etc/resolv.conf:
+>
+> ```sh
+> mkdir -p ~/.minikube/files/etc
+> echo nameserver 8.8.8.8 > ~/.minikube/files/etc/resolv.conf
+> minikube start
+> ```
+
+See
+
+- https://suraj.io/post/apiserver-in-minikube-static-configs/
+- https://github.com/kubernetes/minikube/issues/3559
+- https://minikube.sigs.k8s.io/docs/tasks/sync/
