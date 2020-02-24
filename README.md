@@ -101,20 +101,37 @@ docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/worker/dev -f fibonac
 docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/proxy/dev -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
 ```
 
-## For Support
+## Update A Deployment With New Images For Development
 
-Rollout deployment after docker image update. Unfortunately this requires a deployment's config `imagePullPolicy: IfNotPresent` or `imagePullPolicy: Never` to not fail on image pull in the first way.
+To update a deployment with new images to K8s is unneccessary hard. One must first be aware that the docker image cache against one builds on standard dev/user login is - at least when virtualized - NOT the same as the docker image cache on the virtualized host where K8s runs.
+
+For that executing `eval $(minikube docker-env)` changes the appropriate environment variables in one's shell. So, after doing that, a `docker build -t ...` command will put the image inside of that cache where K8s on the virtualized host can access them.
+
+Second step is to inform K8s that changes - in this case the undelying image - for deployments should be redeployed. For that one has to kick off a K8s' rollout command.
+See
+
+- https://stackoverflow.com/a/57559438
+- https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-restart-em-
+
+Unfortunately this additionally requires beforehand all deployments' configs to have an `imagePullPolicy: IfNotPresent` or `imagePullPolicy: Never` - to not fail on image pull from whatever external docker registry is set up in the first way.
+
+To sum up the canon
 
 ```sh
-kubectl rollout restart deployment server-deployment
+eval $(minikube docker-env)
+docker build -t ...
+kubectl rollout restart deployment server-deployment # targeting an individual deployment
+# or
+kubectl rollout restart deployment  # targeting all deployments
 ```
 
-Check on status of different k8s objects
+## Check On Status Of Different K8s Objects
 
 ```sh
 kubectl get deployments
 kubectl get pods
 kubectl get services
+kubectl get secrets
 ```
 
 ## Issue Parade
