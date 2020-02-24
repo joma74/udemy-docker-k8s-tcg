@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      component: redis
+  template:
+    metadata:
+      labels:
+        component: redis
+    spec:
+      containers:
+        - name: redis
+          image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/redis/prod:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
