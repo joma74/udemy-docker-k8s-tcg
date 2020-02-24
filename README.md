@@ -313,3 +313,71 @@ See
 - https://suraj.io/post/apiserver-in-minikube-static-configs/
 - https://github.com/kubernetes/minikube/issues/3559
 - https://minikube.sigs.k8s.io/docs/tasks/sync/
+
+### Where At The Host Can K8s Persistent Volumes Be Found
+
+```yaml
+...
+// postgres-deployment.yml
+    volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: database-persistent-volume-claim
+    containers:
+    ...
+        volumeMounts:
+        - name: postgres-storage
+            mountPath: /var/lib/postgresql/data
+            subPath: postgres
+...
+
+// database-persistent-volume-claim.yml
+...
+kind: PersistentVolumeClaim
+metadata:
+  name: database-persistent-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+...
+```
+
+```sh
+$ kubectl describe pvc
+Name:          database-persistent-volume-claim
+...
+Volume:        pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7
+...
+Capacity:      1Gi
+Access Modes:  RWO
+VolumeMode:    Filesystem
+Mounted By:    postgres-deployment-7bb4cc6c95-tmfh9
+...
+  Normal  ProvisioningSucceeded  17m                k8s.io/minikube-hostpath 60afeb38-54c4-11ea-a189-080027383d5a  Successfully provisioned volume pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7
+
+$ kubectl describe pv
+Name:            pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7
+Labels:          <none>
+Annotations:     ...
+                 pv.kubernetes.io/provisioned-by: k8s.io/minikube-hostpath
+...
+Claim:           default/database-persistent-volume-claim
+...
+Source:
+    Type:          HostPath (bare host directory volume)
+    Path:          /tmp/hostpath-provisioner/pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7
+    HostPathType:
+...
+
+$ minikube ssh
+
+$ ls -altr /tmp/hostpath-provisioner/pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7
+total 12
+drwxr-xr-x  3 root root 4096 Feb 21 18:54 ..
+drwxrwxrwx  3 root root 4096 Feb 21 18:54 .
+drwx------ 19  999 root 4096 Feb 21 18:54 postgres
+
+```
