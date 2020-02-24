@@ -1,5 +1,11 @@
 # Fibonacci Calc
 
+## K8s Usage
+
+TBD
+
+## Docker Compose Usage
+
 Inside fibonacci-calc-parent do
 
 for production
@@ -43,7 +49,7 @@ http://localhost:3050/
 
 TBD Pic Project's CI/CD Concept Screenshot
 
-## Build Commands
+## K8s Build Commands
 
 ### For Production
 
@@ -101,7 +107,7 @@ docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/worker/dev -f fibonac
 docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/proxy/dev -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
 ```
 
-## Update A Deployment With New Images For Development
+## Update A K8s Deployment With New Images For Development
 
 To update a deployment with new images to K8s is unneccessary hard. One must first be aware that the docker image cache against one builds on standard dev/user login is - at least when virtualized - NOT the same as the docker image cache on the virtualized host where K8s runs.
 
@@ -115,7 +121,7 @@ See
 
 Unfortunately this additionally requires beforehand all deployments' configs to have an `imagePullPolicy: IfNotPresent` or `imagePullPolicy: Never` - to not fail on image pull from whatever external docker registry is set up in the first way.
 
-To sum up the canon
+To sum up the canon is
 
 ```sh
 eval $(minikube docker-env)
@@ -132,13 +138,64 @@ kubectl get deployments
 kubectl get pods
 kubectl get services
 kubectl get secrets
+kubectl describe ingress
 ```
+
+## Ingress Nginx 0.30.0 Installation And Configuration
+
+See https://kubernetes.github.io/ingress-nginx/deploy/#minikube for installation
+
+```sh
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.30.0/deploy/static/mandatory.yaml
+$ minikube addons enable ingress
+```
+
+See https://kubernetes.io/docs/concepts/services-networking/ingress/ for configuration
+
+> !!! attention Starting in Version 0.22.0, ingress definitions using the annotation nginx.ingress.kubernetes.io/rewrite-target are not backwards compatible with previous versions. In Version 0.22.0 and beyond, any substrings within the request URI that need to be passed to the rewritten path must explicitly be defined in a capture group.
+
+See https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/rewrite/README.md
 
 ## Issue Parade
 
 ### Uncaught Error: Incompatible SockJS! Main site uses: "1.4.0", the iframe: "1.3.0".
 
 See https://github.com/facebook/create-react-app/issues/7782 for nginx changes, but error persists. Further https://github.com/facebook/create-react-app/pull/7988 should close this up.
+
+### How To Get Around The New nginx-ingress Rewrite Rule
+
+> Starting in Version 0.22.0, ingress definitions using the annotation nginx.ingress.kubernetes.io/rewrite-target are not backwards compatible with previous versions. In Version 0.22.0 and beyond, **any substrings within the request URI that need to be passed to the rewritten path must explicitly be defined in a capture group**.
+
+See https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/rewrite/README.md
+
+Wrapped my head around how to apply the root path with this new rule. But then i stumbled upon
+
+> In NGINX, regular expressions follow a first match policy. In order to enable more accurate path matching, ingress-nginx **first orders the paths by descending length** before writing them to the NGINX template as location blocks.
+
+See https://kubernetes.github.io/ingress-nginx/user-guide/ingress-path-matching/
+
+```yml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingres
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+    - http:
+        paths:
+          - path: "/(.*)"
+            backend:
+              serviceName: frontend-cluster-ip-service
+              servicePort: 3000
+          - path: "/api/(.*)"
+            backend:
+              serviceName: server-cluster-ip-service
+              servicePort: 5000
+```
+
+Reasoning is that a path of `/api/(.*)` is longer and gets the proper rewrite. As opposed to path `/(.*)`, which is shorter.
 
 ## DNK
 
@@ -396,5 +453,4 @@ total 12
 drwxr-xr-x  3 root root 4096 Feb 21 18:54 ..
 drwxrwxrwx  3 root root 4096 Feb 21 18:54 .
 drwx------ 19  999 root 4096 Feb 21 18:54 postgres
-
 ```
