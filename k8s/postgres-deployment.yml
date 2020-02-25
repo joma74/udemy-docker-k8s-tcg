@@ -16,7 +16,7 @@ spec:
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
-            claimName: database-persistent-volume-claim
+            claimName: persistent-volume-claim
       containers:
         - name: postgres
           image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/postgres/prod:latest

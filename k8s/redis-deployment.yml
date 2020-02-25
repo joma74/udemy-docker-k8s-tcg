@@ -13,9 +13,17 @@ spec:
       labels:
         component: redis
     spec:
+      volumes:
+        - name: redis-storage
+          persistentVolumeClaim:
+            claimName: persistent-volume-claim
       containers:
         - name: redis
           image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/redis/prod:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 6379
+          volumeMounts:
+            - name: redis-storage
+              mountPath: /data
+              subPath: redis
