@@ -162,7 +162,58 @@ See https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/rewrit
 
 See https://github.com/facebook/create-react-app/issues/7782 for nginx changes, but error persists. Further https://github.com/facebook/create-react-app/pull/7988 should close this up.
 
-### How To Get Around The New nginx-ingress Rewrite Rule
+### The Stickaround Persistent Volume
+
+Checked pvc was deleted, volumemounted listed nothing, but still this pv sticked around
+
+```sh
+$ kubectl describe pv
+Name:            pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7
+Labels:          <none>
+Annotations:     hostPathProvisionerIdentity: 60afeae7-54c4-11ea-a189-080027383d5a
+                 pv.kubernetes.io/provisioned-by: k8s.io/minikube-hostpath
+Finalizers:      [kubernetes.io/pv-protection]
+StorageClass:    standard
+==> Status:          Released
+Claim:           default/database-persistent-volume-claim
+==> Reclaim Policy:  Delete
+Access Modes:    RWO
+VolumeMode:      Filesystem
+Capacity:        1Gi
+Node Affinity:   <none>
+Message:
+Source:
+    Type:          HostPath (bare host directory volume)
+    Path:          /tmp/hostpath-provisioner/pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7
+    HostPathType:
+Events:            <none>
+```
+
+Seems to be reported but closed minikube issue "Deleted hostpath PVs stuck in released state after minikube restart", see https://github.com/kubernetes/minikube/issues/4546
+
+Some logs correlate to what is mentioned in issue 4546.
+
+```sh
+$ minikube ssh
+$ cat /tmp/storage-provisioner.INFO
+...
+I0225 21:57:05.162313       1 controller.go:1073] scheduleOperation[delete-pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7[545a3042-d84b-47c2-a01f-a4badeb509b5]]
+I0225 21:57:05.204100       1 controller.go:1040] deletion of volume "pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7" ignored: ignored because identity annotation on PV does not match ours
+```
+
+Even some other mentioned workaround did not work
+
+```sh
+kubectl patch pv -p '{"metadata":{"finalizers":null}}' pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7
+```
+
+Finally, this command did remove the pv.
+
+```sh
+kubectl delete persistentvolumes pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7
+```
+
+### How To Get Around The New 0.22.0 Nginx-ingress Rewrite Rule
 
 > Starting in Version 0.22.0, ingress definitions using the annotation nginx.ingress.kubernetes.io/rewrite-target are not backwards compatible with previous versions. In Version 0.22.0 and beyond, **any substrings within the request URI that need to be passed to the rewritten path must explicitly be defined in a capture group**.
 
@@ -244,6 +295,37 @@ curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 sudo apt-get update
 sudo apt-get install pgadmin4
+```
+
+### Connect To Postgresql Database Inside K8s
+
+```sh
+$ kubectl exec -it <postgresspod-name> bash
+$  PGPASSWORD=<password>
+$ psql -h localhost -U postgres postgres
+postgres=# \l
+                                 List of databases
+   Name    |  Owner   | Encoding |  Collate   |   Ctype    |   Access privileges
+-----------+----------+----------+------------+------------+-----------------------
+ postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 |
+
+postgres=# \c postgres
+You are now connected to database "postgres" as user "postgres".
+postgres=# \dt
+         List of relations
+ Schema |  Name  | Type  |  Owner
+--------+--------+-------+----------
+ public | values | table | postgres
+(1 row)
+
+postgres=# select * from values;
+ number
+--------
+     40
+     39
+     38
+     37
+(4 rows)
 ```
 
 ### How To Reset Anonymus Volumes On Docker Compose Up
