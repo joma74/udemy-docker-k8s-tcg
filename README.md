@@ -1,8 +1,17 @@
 # Fibonacci Calc
 
+<img src="./docs/fibonacci-calc-frontend-screenshot.png" alt="Project's Frontend Screenshot"
+	title="Project's Frontend Screenshot" width="1000" height="auto" />
+
 ## K8s Usage
 
 TBD
+
+Then open
+
+```sh
+x-www-browser http://$(minikube ip)
+```
 
 ## Docker Compose Usage
 
@@ -26,9 +35,6 @@ There are issues if the startup of the images does not happen in some order. If 
 
 Then open
 http://localhost:3050/
-
-<img src="./docs/fibonacci-calc-frontend-screenshot.png" alt="Project's Frontend Screenshot"
-	title="Project's Frontend Screenshot" width="1000" height="auto" />
 
 ## Project's Environment Concept
 
@@ -213,6 +219,128 @@ kubectl delete persistentvolumes pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7
 
 ## DNK
 
+### How To Check Why Your Docker Container Gets OOM Killed
+
+Found out that one has to look after `cgroup`'s `memory.max_usage_in_bytes`.
+
+> memory.max_usage_in_bytes # show max memory usage recorded
+
+See [Memory Resource Controller](https://www.kernel.org/doc/Documentation/cgroup-v1/memory.txt) versioned as v1, in v2 there is not mention.
+
+Note that `memory.max_usage_in_bytes` and `memory.usage_in_bytes` are said to report RSS + CACHE.
+
+```sh
+$ docker exec -it cc245055151e bash
+root@frontend-deployment-684d6cd94f-nfp57:/# cat /sys/fs/cgroup/memory/memory.max_usage_in_bytes
+15208448
+root@frontend-deployment-684d6cd94f-nfp57:/# cat /sys/fs/cgroup/memory/memory.usage_in_bytes
+6660096
+```
+
+To get the same from outside of the container, one first has to get the uid of the pod
+
+```sh
+$ kubectl get pods frontend-deployment-684d6cd94f-5sd7x -o jsonpath='{.metadata.uid}'
+9dc4d0c2-aab9-4ef9-94b5-fd8433ca094b
+```
+
+Then one has to find the uid of a deployment from inside the node.
+
+```sh
+$ minikube ssh
+$ ls /sys/fs/cgroup/memory/kubepods/burstable/ | grep 9dc4d0c2-aab9-4ef9-94b5-fd8433ca094b
+$ ls /sys/fs/cgroup/memory/kubepods/besteffort/ | grep 9dc4d0c2-aab9-4ef9-94b5-fd8433ca094b
+pod9dc4d0c2-aab9-4ef9-94b5-fd8433ca094b
+```
+
+Going down that road one observes that that uid does not map to processes
+
+```sh
+$ cat /sys/fs/cgroup/memory/kubepods/besteffort/pod9dc4d0c2-aab9-4ef9-94b5-fd8433ca094b/cgroup.procs
+```
+
+But is contains two more uid's
+
+```sh
+$ ls /sys/fs/cgroup/memory/kubepods/besteffort/pod9dc4d0c2-aab9-4ef9-94b5-fd8433ca094b/
+654469bc062c9403bcdbe7042fd3c3e3e4e8c0413c23ffd3eed74be52a3c4662
+afe2714a5bf31a0b795c75272729cfd6b3baf66950cf37a9891ff3fc93d2168f
+...
+memory.max_usage_in_bytes ... memory.usage_in_bytes
+```
+
+Evaluating these two sub hash id's regarding `cgroup.procs` gives
+
+```sh
+$ cat /sys/fs/cgroup/memory/kubepods/besteffort/pod9dc4d0c2-aab9-4ef9-94b5-fd8433ca094b/afe2714a5bf31a0b795c75272729cfd6b3baf66950cf37a9891ff3fc93d2168f/cgroup.procs
+5569
+$ cat /sys/fs/cgroup/memory/kubepods/besteffort/pod9dc4d0c2-aab9-4ef9-94b5-fd8433ca094b/654469bc062c9403bcdbe7042fd3c3e3e4e8c0413c23ffd3eed74be52a3c4662/cgroup.procs
+6811
+6976
+```
+
+Which match to processes
+
+```sh
+$ ps -ef | grep '6811\|6976\|5569' | grep -v grep
+root      5569  5305  0 10:35 ?        00:00:00 /pause
+root      6811  6647  0 10:35 ?        00:00:00 nginx: master process nginx -g daemon off;
+101       6976  6811  0 10:35 ?        00:00:00 nginx: worker process
+```
+
+### How To Check K8s Stats
+
+Check on nodes
+
+```sh
+$ kubectl top nodes
+NAME       CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
+minikube   1435m        35%    1635Mi          84%
+```
+
+Check on all pods
+
+```sh
+$ kubectl top pod
+NAME                                   CPU(cores)   MEMORY(bytes)
+frontend-deployment-684d6cd94f-5sd7x   0m           2Mi
+frontend-deployment-684d6cd94f-nfp57   0m           2Mi
+frontend-deployment-684d6cd94f-p7rg7   0m           2Mi
+```
+
+Check on docker container
+
+```sh
+eval $(minikube docker-env)
+$ docker stats --no-trunc --no-stream k8s_frontend_frontend-deployment-684d6cd
+94f-5sd7x_default_9dc4d0c2-aab9-4ef9-94b5-fd8433ca094b_1
+CONTAINER ID                                                       NAME
+                            CPU %               MEM USAGE / LIMIT     MEM %               NET I/O             BLOCK I/O           PIDS
+654469bc062c9403bcdbe7042fd3c3e3e4e8c0413c23ffd3eed74be52a3c4662   k8s_frontend_frontend-deployment-684d6cd94f-5sd7x_default_9dc4d0c2-aab9
+-4ef9-94b5-fd8433ca094b_1   0.00%               2.387MiB / 1.894GiB   0.12%               181kB / 175kB       0B / 0B             2
+```
+
+Show top control groups by their resource usage
+
+```sh
+$ minikube ssh
+$ systemd-cgtop -m
+Control Group   Tasks   %CPU    Memory  Input/s     Output/s
+/               -       262.9   9.9G    -           -
+/user.slice     976     255.9   7.7G    -           -
+/system.slice   153       6.0   2.8G    -           -
+...
+Control Group   Tasks   %CPU    Memory  Input/s     Output/s
+/               1380    77.1    1.8G    -           -
+kubepods        591     75.0    1.0G    -           -
+...
+/kubepods/burstable/pod16a8eac1700500b235ef980bafeb798f
+                16      32.4  312.7M    -           -
+/kubepods/besteffort/odc3a0bd01-0095-493a-9dd4-0c9c772ba8e1157
+                        3.5   108.7M        -        -
+...
+```
+
 ### How To Get Around The New 0.22.0 Nginx-ingress Rewrite Rule
 
 > Starting in Version 0.22.0, ingress definitions using the annotation nginx.ingress.kubernetes.io/rewrite-target are not backwards compatible with previous versions. In Version 0.22.0 and beyond, **any substrings within the request URI that need to be passed to the rewritten path must explicitly be defined in a capture group**.
@@ -283,7 +411,7 @@ See
 - https://www.npmjs.com/package/debug#formatters
 - https://nodejs.org/api/util.html#util_util_format_format_args
 
-### Install Pgadmin4
+### Install Pgadmin4 On Ubuntu
 
 See https://wiki.postgresql.org/wiki/Apt
 
