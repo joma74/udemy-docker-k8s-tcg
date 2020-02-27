@@ -189,9 +189,7 @@ Source:
 Events:            <none>
 ```
 
-Seems to be reported but closed minikube issue "Deleted hostpath PVs stuck in released state after minikube restart", see https://github.com/kubernetes/minikube/issues/4546
-
-Some logs correlate to what is mentioned in issue 4546.
+Seems to be a reported but closed minikube issue named "Deleted hostpath PVs stuck in released state after minikube restart", see https://github.com/kubernetes/minikube/issues/4546. Some logs correlate to what is mentioned there.
 
 ```sh
 $ minikube ssh
@@ -201,7 +199,7 @@ I0225 21:57:05.162313       1 controller.go:1073] scheduleOperation[delete-pvc-a
 I0225 21:57:05.204100       1 controller.go:1040] deletion of volume "pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7" ignored: ignored because identity annotation on PV does not match ours
 ```
 
-Even some other mentioned workaround did not work
+Some other mentioned workaround did not work
 
 ```sh
 kubectl patch pv -p '{"metadata":{"finalizers":null}}' pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7
@@ -212,6 +210,8 @@ Finally, this command did remove the pv.
 ```sh
 kubectl delete persistentvolumes pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7
 ```
+
+## DNK
 
 ### How To Get Around The New 0.22.0 Nginx-ingress Rewrite Rule
 
@@ -246,9 +246,7 @@ spec:
               servicePort: 5000
 ```
 
-Reasoning is that a path of `/api/(.*)` is longer and gets the proper rewrite. As opposed to path `/(.*)`, which is shorter.
-
-## DNK
+My reasoning is that a path of `/api/(.*)` is longer/more specific and gets the proper rewrite. As opposed to path `/(.*)`, which is shorter/less specific.
 
 ### POSTGRES replies on startup with "Error: Database is uninitialized and superuser password is not specified"
 
