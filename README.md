@@ -272,6 +272,7 @@ memory.max_usage_in_bytes ... memory.usage_in_bytes
 Evaluating these two sub hash id's regarding `cgroup.procs` gives
 
 ```sh
+$ minikube ssh
 $ cat /sys/fs/cgroup/memory/kubepods/besteffort/pod9dc4d0c2-aab9-4ef9-94b5-fd8433ca094b/afe2714a5bf31a0b795c75272729cfd6b3baf66950cf37a9891ff3fc93d2168f/cgroup.procs
 5569
 $ cat /sys/fs/cgroup/memory/kubepods/besteffort/pod9dc4d0c2-aab9-4ef9-94b5-fd8433ca094b/654469bc062c9403bcdbe7042fd3c3e3e4e8c0413c23ffd3eed74be52a3c4662/cgroup.procs
@@ -287,6 +288,8 @@ root      5569  5305  0 10:35 ?        00:00:00 /pause
 root      6811  6647  0 10:35 ?        00:00:00 nginx: master process nginx -g daemon off;
 101       6976  6811  0 10:35 ?        00:00:00 nginx: worker process
 ```
+
+_P.S. Out of scope, but for what is `\pause` about, see https://www.ianlewis.org/en/almighty-pause-container_
 
 ### How To Check K8s Stats
 
