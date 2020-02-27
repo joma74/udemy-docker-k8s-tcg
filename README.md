@@ -289,7 +289,7 @@ root      6811  6647  0 10:35 ?        00:00:00 nginx: master process nginx -g d
 101       6976  6811  0 10:35 ?        00:00:00 nginx: worker process
 ```
 
-_P.S. Out of scope, but for what is `\pause` about, see https://www.ianlewis.org/en/almighty-pause-container_
+_P.S. Out of scope, but for additional info what is `\pause` about, see https://www.ianlewis.org/en/almighty-pause-container_
 
 ### How To Check K8s Stats
 
