@@ -7,7 +7,7 @@ language: generic
 env:
   global:
     - GCP_PROJECT_ID=udemy-docker-k8s-tcg-1
-    - IMAGE_NAME_BASE=joma74/udemy-docker-k8s-tcg/workflow-d-frontend
+    - IMAGE_NAME_BASE=joma74/udemy-docker-k8s-tcg-1/workflow-d-frontend
     - IMAGE_NAME_DEV=${IMAGE_NAME_BASE}/dev
     - IMAGE_NAME_PROD=${IMAGE_NAME_BASE}/prod
     - IMAGE_PROD_ON_REPO=eu.gcr.io/${GCP_PROJECT_ID}/${IMAGE_NAME_PROD}
@@ -18,7 +18,7 @@ env:
 before_install:
   - openssl aes-256-cbc -K $encrypted_9144e8bd33c7_key -iv $encrypted_9144e8bd33c7_iv -in travisci-deployer_udemy-docker-k8s-tcg-1_key.json.enc -out travisci-deployer_udemy-docker-k8s-tcg-1_key.json -d
   - curl https://sdk.cloud.google.com | bash > /dev/null
-  - source "$HOME/google-cloud-sdk/path.bash.inc"
+  - source "$HOME/google-cloud-sdk/path.bash.inc" # Promote gcloud to PATH top priority (prevent using old version fromt travis)
   - gcloud auth activate-service-account --key-file=travisci-deployer_udemy-docker-k8s-tcg-1_key.json # login, for service accounts
   - gcloud auth configure-docker # login to gcr, to enable "docker push"
   - gcloud config set project "${GCP_PROJECT_ID}"
@@ -41,6 +41,10 @@ script:
       --max-instances=2 \
       ;
     set +x
+
+branches:
+  only:
+    - workflow-d-frontend
 
 notifications:
   email:

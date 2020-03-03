@@ -18,6 +18,12 @@ Notice that AWS Hosting is alternatively done with Google Cloud Run
 
 ## Build Commands
 
+For any execute at least once before. See [Use .travis.yml To Set Your Environment](#use-.travis.yml-to-set-your-environment)
+
+```sh
+source ./bin/exporttravistoenv.sh
+```
+
 dev build command
 
 ```sh
@@ -33,7 +39,7 @@ docker run -e CI=true "${IMAGE_NAME_DEV}" yarn run test
 prod build command
 
 ```sh
-docker build -t "${IMAGE_PROD_ON_REPO}" .
+docker build -t "${IMAGE_NAME_PROD}" .
 ```
 
 # Read All The Good Things For Google Cloud Run

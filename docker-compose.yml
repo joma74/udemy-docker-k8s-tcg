@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    image: "joma/workflow-d/frontend"
+    image: "joma74/udemy-docker-k8s-tcg-1/workflow-d/frontend"
     ports:
       - "3000:3000"
     volumes:
@@ -17,7 +17,7 @@ services:
     command: ["yarn", "run", "test"]
     stdin_open: "true"
     tty: "true"
-    image: "joma/workflow-d/frontend"
+    image: "joma74/udemy-docker-k8s-tcg-1/workflow-d/frontend"
     volumes:
       - /usr/app/node_modules
       - .:/usr/app
