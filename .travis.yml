@@ -1,0 +1,42 @@
+sudo: required
+services:
+  - docker
+
+language: generic
+
+env:
+  global:
+    - GCP_PROJECT_ID=udemy-docker-k8s-tcg-2
+    - IMAGE_NAME_BASE=joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/
+    - IMAGE_NAME_FRONTEND=frontend/
+    - IMAGE_NAME_FRONTEND_DEV=${IMAGE_NAME_BASE}${IMAGE_NAME_FRONTEND}dev
+    - IMAGE_PROD_ON_REPO_BASE=eu.gcr.io/${GCP_PROJECT_ID}/
+    - CLUSTER_REGION=europe-west1
+    - CLUSTER_NAME=udemy-docker-k8s-tcg-2-cluster
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1 # prevent gcloud from prompting, see https://cloud.google.com/sdk/gcloud/reference/#--quiet
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_36fc87176ac2_key -iv $encrypted_36fc87176ac2_iv -in travisci-deployer_udemy-docker-k8s-tcg-2_key.json.enc -out travisci-deployer_udemy-docker-k8s-tcg-2_key.json -d
+  - curl https://sdk.cloud.google.com | bash > /dev/null
+  - source "$HOME/google-cloud-sdk/path.bash.inc" # Promote gcloud to PATH top priority (prevent using old version fromt travis)
+  - gcloud auth activate-service-account --key-file=travisci-deployer_udemy-docker-k8s-tcg-2_key.json # login, for service accounts
+  - gcloud auth configure-docker # login to gcr, to enable "docker push"
+  - gcloud config set project "${GCP_PROJECT_ID}"
+  - gcloud config set compute/zone "${CLUSTER_REGION}"
+  - gcloud container clusters get-credentials "${CLUSTER_NAME}"
+  - docker build -t ${IMAGE_NAME_FRONTEND_DEV} -f ./fibonacci-calc-frontend/Dockerfile.dev ./fibonacci-calc-frontend
+
+script:
+  - docker run -e CI=true "${IMAGE_NAME_FRONTEND_DEV}" yarn run test
+  - |
+    set -ex;
+    set +x
+
+branches:
+  only:
+    - fibonacci-calc-parent
+
+notifications:
+  email:
+    recipients:
+      - dev-mails@gmx.net
