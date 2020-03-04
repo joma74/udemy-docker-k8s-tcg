@@ -9,7 +9,7 @@ services:
     image: "redis:latest"
     container_name: fibonacci-calc_redis_prod
   proxy:
-    image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/proxy/prod:latest
+    image: joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/proxy/prod:latest
     build:
       dockerfile: Dockerfile
       context: ./fibonacci-calc-proxy
@@ -21,7 +21,7 @@ services:
     ports:
       - "3050:80"
   api:
-    image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/api/prod:latest
+    image: joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/api/prod:latest
     build:
       dockerfile: Dockerfile
       context: ./fibonacci-calc-server
@@ -43,7 +43,7 @@ services:
       - PGDATABASE=postgres
       - PGPASSWORD=postgres_password
   frontend:
-    image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/frontend/prod:latest
+    image: joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/frontend/prod:latest
     build:
       dockerfile: Dockerfile
       context: ./fibonacci-calc-frontend
@@ -51,7 +51,7 @@ services:
     depends_on:
       - api
   worker:
-    image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/worker/prod:latest
+    image: joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/worker/prod:latest
     build:
       dockerfile: Dockerfile
       context: ./fibonacci-calc-worker
