@@ -5,13 +5,47 @@
 
 ## K8s Usage
 
-TBD
+### On Minikube
 
 Then open
 
 ```sh
 x-www-browser http://$(minikube ip)
 ```
+
+### On GCloud
+
+#### GCloud Pre-Setup
+
+Diffed to what is mentioned in [README of https://github.com/joma74/udemy-docker-k8s-tcg/tree/workflow-d-frontend](https://github.com/joma74/udemy-docker-k8s-tcg/tree/workflow-d-frontend#read-all-the-good-things-for-google-cloud-run) one has to setup a gcloud travid-deployer account and produce the travis encoded gcloud travid-deployer credential file.
+
+```sh
+export HISTFILE=~/.bash_history_udemy-docker-k8s-tcg-2
+PROJECT_ID=udemy-docker-k8s-tcg-2
+SVCACCT_NAME=travisci-deployer
+gcloud auth login
+gcloud config set project $PROJECT_ID
+gcloud config get-value project
+gcloud iam service-accounts list
+gcloud iam service-accounts create "${SVCACCT_NAME?}"
+SVCACCT_EMAIL="$(gcloud iam service-accounts list --filter="name:${SVCACCT_NAME?}@" --format=value\(email\))"
+echo $SVCACCT_NAME
+echo $SVCACCT_EMAIL
+cd /home/joma/entwicklung/nodews/udemy-docker-k8s-tcg-parent/fibonacci-calc-parent
+gcloud iam service-accounts keys create "travisci-deployer_udemy-docker-k8s-tcg-2_key.json" --iam-account="${SVCACCT_EMAIL?}"
+gcloud projects add-iam-policy-binding "${PROJECT_ID?}" --member="serviceAccount:${SVCACCT_EMAIL?}" --role="roles/storage.admin"
+gcloud projects add-iam-policy-binding "${PROJECT_ID?}" --member="serviceAccount:${SVCACCT_EMAIL?}" --role="roles/iam.serviceAccountUser"
+gcloud iam roles list --filter="Kubernetes"
+gcloud projects add-iam-policy-binding "${PROJECT_ID?}" --member="serviceAccount:${SVCACCT_EMAIL?}" --role="roles/container.developer"
+travis encrypt-file --org travisci-deployer_udemy-docker-k8s-tcg-2_key.json
+history -a
+```
+
+References
+
+- See [https://github.com/joma74/udemy-docker-k8s-tcg/tree/workflow-d-frontend](https://github.com/joma74/udemy-docker-k8s-tcg/tree/workflow-d-frontend#read-all-the-good-things-for-google-cloud-run)
+- See https://www.juandebravo.com/2019/03/01/travis-google-kubernetes-engine-deployment/
+- See https://github.com/juandebravo/travis-google-kubernetes-engine
 
 ## Docker Compose Usage
 
@@ -34,7 +68,10 @@ _As opposed to production, the development mounts the appropriate source folders
 There are issues if the startup of the images does not happen in some order. If this happens, stop the cluster (CTRL+C) and relaunch above command again :smirk_cat:
 
 Then open
-http://localhost:3050/
+
+```sh
+x-www-browser http://localhost:3050/
+```
 
 ## Project's Environment Concept
 
@@ -61,56 +98,56 @@ TBD Pic Project's CI/CD Concept Screenshot
 
 ```sh
 docker pull redis:latest
-docker image tag redis:latest joma74/udemy-docker-k8s-tcg/fibonacci-calc/redis/prod
+docker image tag redis:latest joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/redis/prod
 ```
 
 ```sh
 docker pull postgres:latest
-docker image tag postgres:latest joma74/udemy-docker-k8s-tcg/fibonacci-calc/postgres/prod
+docker image tag postgres:latest joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/postgres/prod
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/frontend/prod -f fibonacci-calc-frontend/Dockerfile fibonacci-calc-frontend/
+docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/frontend/prod -f fibonacci-calc-frontend/Dockerfile fibonacci-calc-frontend/
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/server/prod -f fibonacci-calc-server/Dockerfile fibonacci-calc-server/
+docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/server/prod -f fibonacci-calc-server/Dockerfile fibonacci-calc-server/
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/worker/prod -f fibonacci-calc-worker/Dockerfile fibonacci-calc-worker/
+docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/worker/prod -f fibonacci-calc-worker/Dockerfile fibonacci-calc-worker/
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/prox/prod -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
+docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/prox/prod -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
 ```
 
 ### For Development
 
 ```sh
 docker pull redis:latest
-docker image tag redis:latest joma74/udemy-docker-k8s-tcg/fibonacci-calc/redis/dev
+docker image tag redis:latest joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/redis/dev
 ```
 
 ```sh
 docker pull postgres:latest
-docker image tag postgres:latest joma74/udemy-docker-k8s-tcg/fibonacci-calc/postgres/dev
+docker image tag postgres:latest joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/postgres/dev
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/frontend/dev -f fibonacci-calc-frontend/Dockerfile.dev fibonacci-calc-frontend/
+docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/frontend/dev -f fibonacci-calc-frontend/Dockerfile.dev fibonacci-calc-frontend/
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/server/dev -f fibonacci-calc-server/Dockerfile.dev fibonacci-calc-server/
+docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/server/dev -f fibonacci-calc-server/Dockerfile.dev fibonacci-calc-server/
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/worker/dev -f fibonacci-calc-worker/Dockerfile.dev fibonacci-calc-worker/
+docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/worker/dev -f fibonacci-calc-worker/Dockerfile.dev fibonacci-calc-worker/
 ```
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg/fibonacci-calc/proxy/dev -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
+docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/proxy/dev -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
 ```
 
 ## Update A K8s Deployment With New Images For Development
