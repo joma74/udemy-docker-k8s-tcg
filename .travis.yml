@@ -34,7 +34,6 @@ before_install:
   - gcloud config set project "${GCP_PROJECT_ID}"
   - gcloud config set compute/zone "${CLUSTER_REGION}"
   - gcloud container clusters get-credentials "${CLUSTER_NAME}"
-  - docker build -t ${IMAGE_NAME_FRONTEND_DEV} -f ./fibonacci-calc-frontend/Dockerfile.dev ./fibonacci-calc-frontend
 
 script:
   - |
