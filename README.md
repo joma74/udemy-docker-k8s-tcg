@@ -47,6 +47,18 @@ References
 - See https://www.juandebravo.com/2019/03/01/travis-google-kubernetes-engine-deployment/
 - See https://github.com/juandebravo/travis-google-kubernetes-engine
 
+## Travis Usage
+
+The following commands
+
+- source the env/global section of travis.yml to the local env
+- configures the gcloud to access the GCP
+
+```sh
+. ./bin/exporttravisenvglobaltolocalenv.sh
+./bin/configgcloudaccess.sh
+```
+
 ## Docker Compose Usage
 
 Inside fibonacci-calc-parent do
