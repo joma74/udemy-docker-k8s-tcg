@@ -37,10 +37,10 @@ before_install:
 script:
   - docker run -e CI=true "${IMAGE_NAME_FRONTEND_DEV}" yarn run test
   - |
-    set -ex;
+    set -o pipefail -ex;
       ./bin/buildnpushprodimages.sh && \ 
       ./bin/execkubectlcommands.sh
-    set +x
+    set +o pipefail +ex
 
 branches:
   only:
