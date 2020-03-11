@@ -15,8 +15,10 @@ env:
     - IMAGE_NAME_FRONTEND_DEV=${IMAGE_NAME_BASE}${IMAGE_NAME_FRONTEND}${IMAGE_PARTICLENAME_DEV}
     - IMAGE_NAME_FRONTEND_PROD=${IMAGE_PROD_ON_REPO_BASE}${IMAGE_NAME_BASE}${IMAGE_NAME_FRONTEND}${IMAGE_PARTICLENAME_PROD}
     - IMAGE_NAME_SERVER=server/
+    - IMAGE_NAME_SERVER_DEV=${IMAGE_NAME_BASE}${IMAGE_NAME_SERVER}${IMAGE_PARTICLENAME_DEV}
     - IMAGE_NAME_SERVER_PROD=${IMAGE_PROD_ON_REPO_BASE}${IMAGE_NAME_BASE}${IMAGE_NAME_SERVER}${IMAGE_PARTICLENAME_PROD}
     - IMAGE_NAME_WORKER=worker/
+    - IMAGE_NAME_WORKER_DEV=${IMAGE_NAME_BASE}${IMAGE_NAME_WORKER}${IMAGE_PARTICLENAME_DEV}
     - IMAGE_NAME_WORKER_PROD=${IMAGE_PROD_ON_REPO_BASE}${IMAGE_NAME_BASE}${IMAGE_NAME_WORKER}${IMAGE_PARTICLENAME_PROD}
     - CLUSTER_REGION=europe-west1
     - CLUSTER_NAME=udemy-docker-k8s-tcg-2-cluster
@@ -35,10 +37,15 @@ before_install:
   - docker build -t ${IMAGE_NAME_FRONTEND_DEV} -f ./fibonacci-calc-frontend/Dockerfile.dev ./fibonacci-calc-frontend
 
 script:
+  - |
+    set -ex;
+      ./bin/buildimages_dev.sh
+    set +ex;
   - docker run -e CI=true "${IMAGE_NAME_FRONTEND_DEV}" yarn run test
   - |
     set -ex;
-      ./bin/buildnpushprodimages.sh \
+      ./bin/buildimages_prod.sh \
+      ./bin/pushimages_prod.sh \
       ./bin/execkubectlcommands.sh
     set +ex;
 
