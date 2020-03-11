@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: worker
-          image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/worker/prod:latest
+          image: joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/worker/prod:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000

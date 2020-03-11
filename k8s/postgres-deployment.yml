@@ -19,7 +19,7 @@ spec:
             claimName: persistent-volume-claim
       containers:
         - name: postgres
-          image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/postgres/prod:latest
+          image: joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/postgres/prod:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432

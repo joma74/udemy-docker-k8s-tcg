@@ -19,7 +19,7 @@ spec:
             claimName: persistent-volume-claim
       containers:
         - name: redis
-          image: joma74/udemy-docker-k8s-tcg/fibonacci-calc/redis/prod:latest
+          image: joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/redis/prod:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 6379
