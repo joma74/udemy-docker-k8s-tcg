@@ -23,6 +23,7 @@ env:
     - CLUSTER_REGION=europe-west1
     - CLUSTER_NAME=udemy-docker-k8s-tcg-2-cluster
     - CLOUDSDK_CORE_DISABLE_PROMPTS=1 # prevent gcloud from prompting, see https://cloud.google.com/sdk/gcloud/reference/#--quiet
+    - GIT_SHA=$(git rev-parse HEAD)
 
 before_install:
   - openssl aes-256-cbc -K $encrypted_36fc87176ac2_key -iv $encrypted_36fc87176ac2_iv -in travisci-deployer_udemy-docker-k8s-tcg-2_key.json.enc -out travisci-deployer_udemy-docker-k8s-tcg-2_key.json -d
