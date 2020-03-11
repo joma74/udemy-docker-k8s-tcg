@@ -43,9 +43,9 @@ script:
   - docker run -e CI=true "${IMAGE_NAME_FRONTEND_DEV}" yarn run test
   - |
     set -ex;
-      ./bin/buildimages_prod.sh \
-      ./bin/pushimages_prod.sh \
-      ./bin/execkubectlcommands.sh
+      ./bin/buildimages_prod.sh; \
+      ./bin/pushimages_prod.sh; \
+      ./bin/execkubectlcommands.sh;
     set +ex;
 
 branches:
