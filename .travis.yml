@@ -8,8 +8,15 @@ env:
   global:
     - GCP_PROJECT_ID=udemy-docker-k8s-tcg-2
     - IMAGE_NAME_BASE=joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/
+    - IMAGE_PARTICLENAME_DEV=dev
+    - IMAGE_PARTICLENAME_PROD=prod
     - IMAGE_NAME_FRONTEND=frontend/
-    - IMAGE_NAME_FRONTEND_DEV=${IMAGE_NAME_BASE}${IMAGE_NAME_FRONTEND}dev
+    - IMAGE_NAME_FRONTEND_DEV=${IMAGE_NAME_BASE}${IMAGE_NAME_FRONTEND}${IMAGE_PARTICLENAME_DEV}
+    - IMAGE_NAME_FRONTEND_PROD=${IMAGE_NAME_BASE}${IMAGE_NAME_FRONTEND}${IMAGE_PARTICLENAME_PROD}
+    - IMAGE_NAME_SERVER=server/
+    - IMAGE_NAME_SERVER_PROD=${IMAGE_NAME_BASE}${IMAGE_NAME_SERVER}${IMAGE_PARTICLENAME_PROD}
+    - IMAGE_NAME_WORKER=worker/
+    - IMAGE_NAME_WORKER_PROD=${IMAGE_NAME_BASE}${IMAGE_NAME_WORKER}${IMAGE_PARTICLENAME_PROD}
     - IMAGE_PROD_ON_REPO_BASE=eu.gcr.io/${GCP_PROJECT_ID}/
     - CLUSTER_REGION=europe-west1
     - CLUSTER_NAME=udemy-docker-k8s-tcg-2-cluster
@@ -19,6 +26,7 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_36fc87176ac2_key -iv $encrypted_36fc87176ac2_iv -in travisci-deployer_udemy-docker-k8s-tcg-2_key.json.enc -out travisci-deployer_udemy-docker-k8s-tcg-2_key.json -d
   - curl https://sdk.cloud.google.com | bash > /dev/null
   - source "$HOME/google-cloud-sdk/path.bash.inc" # Promote gcloud to PATH top priority (prevent using old version fromt travis)
+  - gcloud components update kubectl # Ensure that the latest version of kubectl is installed
   - gcloud auth activate-service-account --key-file=travisci-deployer_udemy-docker-k8s-tcg-2_key.json # login, for service accounts
   - gcloud auth configure-docker # login to gcr, to enable "docker push"
   - gcloud config set project "${GCP_PROJECT_ID}"
@@ -30,6 +38,8 @@ script:
   - docker run -e CI=true "${IMAGE_NAME_FRONTEND_DEV}" yarn run test
   - |
     set -ex;
+      ./bin/buildnpushprodimages.sh && \ 
+      ./bin/execkubectlcommands.sh
     set +x
 
 branches:
