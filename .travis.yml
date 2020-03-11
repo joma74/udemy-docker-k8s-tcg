@@ -30,11 +30,10 @@ before_install:
   - curl https://sdk.cloud.google.com | bash > /dev/null
   - source "$HOME/google-cloud-sdk/path.bash.inc" # Promote gcloud to PATH top priority (prevent using old version fromt travis)
   - gcloud components update kubectl # Ensure that the latest version of kubectl is installed
-  - gcloud auth activate-service-account --key-file=travisci-deployer_udemy-docker-k8s-tcg-2_key.json # login, for service accounts
-  - gcloud auth configure-docker # login to gcr, to enable "docker push"
-  - gcloud config set project "${GCP_PROJECT_ID}"
-  - gcloud config set compute/zone "${CLUSTER_REGION}"
-  - gcloud container clusters get-credentials "${CLUSTER_NAME}"
+  - |
+    set -ex;
+      ./bin/configgcloudaccess.sh
+    set +ex;
 
 script:
   - |
