@@ -21,7 +21,7 @@ do
    thecmd=$(echo $line | envsubst)
    # but had to use eval, cause a subshell ala 
    # bash -c does not deliver
-   eval '$thecmd'
+   eval "$thecmd" # the "" around $thecmd prevents the shell from expanding to the first space or #
 done < <(printf '%s\n' "$out")
 
 set +x
