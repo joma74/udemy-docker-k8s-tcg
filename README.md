@@ -47,6 +47,39 @@ References
 - See https://www.juandebravo.com/2019/03/01/travis-google-kubernetes-engine-deployment/
 - See https://github.com/juandebravo/travis-google-kubernetes-engine
 
+## Helm Setup
+
+See https://helm.sh/docs/intro/install/, section "From Script".
+
+Inside the gcp console
+
+```sh
+$ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+$ chmod 700 get_helm.sh
+$ ./get_helm.sh
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com
+$ helm repo list
+NAME    URL
+stable  https://kubernetes-charts.storage.googleapis.com
+$ helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "stable" chart repository
+Update Complete. ⎈ Happy Helming!⎈
+```
+
+## Install K8s Ingress-Nginx Via Helm
+
+See https://kubernetes.github.io/ingress-nginx/deploy/#using-helm.
+
+```sh
+helm install my-nginx stable/nginx-ingress --set rbac.create=true
+```
+
+At the "Network services" menu on the GCP console, go to "Load balancer details". It shows the external IP:port available. One instance for each node.
+
+<img src="./docs/GCPLoadBalancerConfigAfterHelmIngressNginxSetup.png" alt="GCP load balancer configuration after setup via helm ingress-nginx"
+	title="GCP load balancer configuration after setup via helm ingress-nginx" width="1000" height="auto" />
+
 ## Travis Usage
 
 The following commands
