@@ -246,6 +246,26 @@ See https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/rewrit
 
 ## Issue Parade
 
+### GCP says 'Error while evaluating the ingress spec: service "\<namespace\>/\<masterName\>" is type "ClusterIP", expected "NodePort" or "LoadBalancer"'
+
+> Resolution
+>
+> The solution / workaround is to force one controller to satisfy the ingress using the kubernetes.io/ingress.class annotation as explained in https://kubernetes.github.io/ingress-nginx/user-guide/multiple-ingress.
+>
+> In the configuration of an existing Managed Master, add the following snippet to the YAML field:
+>
+> ```yml
+> ---
+> kind: Ingress
+> metadata:
+> annotations:
+> kubernetes.io/ingress.class: "nginx"
+> ```
+
+See https://support.cloudbees.com/hc/en-us/articles/360019569372-GKE-Warning-when-using-multiple-Ingress-controllers
+
+See also https://stackoverflow.com/a/55647119
+
 ### Uncaught Error: Incompatible SockJS! Main site uses: "1.4.0", the iframe: "1.3.0".
 
 See https://github.com/facebook/create-react-app/issues/7782 for nginx changes, but error persists. Further https://github.com/facebook/create-react-app/pull/7988 should close this up.
