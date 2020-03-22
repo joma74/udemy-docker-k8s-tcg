@@ -4,7 +4,7 @@
 # install http://mikefarah.github.io/yq/read/ first
 ####################################################
 
-set -x
+# set -x
 
 # parses .travis.yml for content of
 # .. env:
@@ -21,7 +21,8 @@ do
    thecmd=$(echo $line | envsubst)
    # but had to use eval, cause a subshell ala 
    # bash -c does not deliver
+   echo $thecmd
    eval "$thecmd" # the "" around $thecmd prevents the shell from expanding to the first space or #
 done < <(printf '%s\n' "$out")
 
-set +x
+# set +x
