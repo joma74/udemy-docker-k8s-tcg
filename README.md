@@ -3,6 +3,36 @@
 <img src="./docs/fibonacci-calc-frontend-screenshot.png" alt="Project's Frontend Screenshot"
 	title="Project's Frontend Screenshot" width="1000" height="auto" />
 
+## Project's Service Concept
+
+<img src="./docs/fibonacci-calc-devenv-concept.png" alt="Project's Dev Service Concept"
+	title="Project's Dev Service Concept Screenshot" width="1000" height="auto" />
+
+## Project's Data Flow Concept
+
+<img src="./docs/fibonacci-calc-flow-concept.png" alt="Project's Flow Concept"
+	title="Project's Flow Concept Screenshot" width="700" height="auto" />
+
+## Travis-To-Local Usage
+
+The following command sources the env/global section of travis.yml to the local env
+
+```sh
+. ./bin/exporttravisenvglobaltolocalenv.sh
+```
+
+## Travis-To-Local-With-GCP Usage
+
+The following commands
+
+- source the env/global section of travis.yml to the local env
+- configures the gcloud to access the GCP
+
+```sh
+. ./bin/exporttravisenvglobaltolocalenv.sh
+./bin/configgcloudaccess.sh
+```
+
 ## K8s Usage
 
 ### On Minikube
@@ -80,18 +110,6 @@ At the "Network services" menu on the GCP console, go to "Load balancer details"
 <img src="./docs/GCPLoadBalancerConfigAfterHelmIngressNginxSetup.png" alt="GCP load balancer configuration after setup via helm ingress-nginx"
 	title="GCP load balancer configuration after setup via helm ingress-nginx" width="1000" height="auto" />
 
-## Travis Usage
-
-The following commands
-
-- source the env/global section of travis.yml to the local env
-- configures the gcloud to access the GCP
-
-```sh
-. ./bin/exporttravisenvglobaltolocalenv.sh
-./bin/configgcloudaccess.sh
-```
-
 ## Docker Compose Usage
 
 Inside fibonacci-calc-parent do
@@ -99,7 +117,7 @@ Inside fibonacci-calc-parent do
 for production
 
 ```sh
-docker-compose up --build --renew-anon-volumes
+./bin/up_compose_prod.sh
 ```
 
 for development
@@ -110,23 +128,11 @@ docker-compose -f docker-compose-dev.yaml up --build --renew-anon-volumes
 
 _As opposed to production, the development mounts the appropriate source folders as volumes into the container._
 
-There are issues if the startup of the images does not happen in some order. If this happens, stop the cluster (CTRL+C) and relaunch above command again :smirk_cat:
-
 Then open
 
 ```sh
 x-www-browser http://localhost:3050/
 ```
-
-## Project's Environment Concept
-
-<img src="./docs/fibonacci-calc-devenv-concept.png" alt="Project's Dev Environment Concept"
-	title="Project's Dev Environment Concept Screenshot" width="1000" height="auto" />
-
-## Project's Flow Concept
-
-<img src="./docs/fibonacci-calc-flow-concept.png" alt="Project's Flow Concept"
-	title="Project's Flow Concept Screenshot" width="700" height="auto" />
 
 ## Project's K8s Concept
 
