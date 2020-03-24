@@ -46,7 +46,7 @@ before_install:
   - gcloud components update kubectl # Ensure that the latest version of kubectl is installed
   - |
     set -ex;
-      ./bin/configgcloudaccess.sh
+      ./bin/configaccess_gcp_prod.sh
     set +ex;
 
 script:
