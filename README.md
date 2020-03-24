@@ -112,7 +112,7 @@ At the "Network services" menu on the GCP console, go to "Load balancer details"
 
 ## Docker Compose Usage
 
-Inside fibonacci-calc-parent do
+Inside fibonacci-calc-parent either do
 
 for production
 
@@ -123,12 +123,12 @@ for production
 for development
 
 ```sh
-docker-compose -f docker-compose-dev.yaml up --build --renew-anon-volumes
+./bin/up_compose_dev.sh
 ```
 
 _As opposed to production, the development mounts the appropriate source folders as volumes into the container._
 
-Then open
+After any of the above then open
 
 ```sh
 x-www-browser http://localhost:3050/
