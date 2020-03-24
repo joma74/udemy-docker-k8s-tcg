@@ -52,13 +52,13 @@ before_install:
 script:
   - |
     set -ex;
-      ./bin/buildimages_dev.sh
+      ./bin/buildimages_any_dev.sh
     set +ex;
   - docker run -e CI=true "${IMAGE_NAME_FRONTEND_DEV}" yarn run test
   - |
     set -ex;
-      ./bin/buildimages_prod.sh; \
-      ./bin/pushimages_prod.sh; \
+      ./bin/buildimages_any_prod.sh; \
+      ./bin/pushimages_gcp_prod.sh; \
       ./bin/execkubectlcommands.sh;
     set +ex;
 
