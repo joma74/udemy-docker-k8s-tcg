@@ -773,3 +773,16 @@ drwxr-xr-x  3 root root 4096 Feb 21 18:54 ..
 drwxrwxrwx  3 root root 4096 Feb 21 18:54 .
 drwx------ 19  999 root 4096 Feb 21 18:54 postgres
 ```
+
+### Where in K8s are the stdout and stderr logs?
+
+```sh
+$ minikube ssh
+$ ls -altr /var/log/containers/
+total 172
+drwxr-xr-x 5 root root  4096 Dec 15 23:51 ..
+lrwxrwxrwx 1 root root    84 Mar 25 21:51 etcd-minikube_kube-system_etcd-6c304fdb116afbbb9d1a89fc67e54aea853df96353f2ca6357fa05f32494ef87.log -> /var/log/pods/kube-system_etcd-minikube_11cfaccf78867c0c4ee4e888308b0a1d/etcd/31.log
+lrwxrwxrwx 1 root root   104 Mar 25 21:51 kube-apiserver-minikube_kube-system_kube-apiserver-1de097a80387183eab6fb5904028629717698102c269b1f5220dd027ddaca89f.log -> /var/log/pods/kube-system_kube-apiserver-minikube_16a8eac1700500b235ef980bafeb798f/kube-apiserver/32.log
+lrwxrwxrwx 1 root root   112 Mar 25 21:51 kube-addon-manager-minikube_kube-system_kube-addon-manager-5240e67e259f113f45d90c4632962957d4b0146cd828ea6e1e48c18038f35dd7.log -> /var/log/pods/kube-system_kube-addon-manager-minikube_c3e29047da86ce6690916750ab69c40b/kube-addon-manager/31.log
+...
+```
