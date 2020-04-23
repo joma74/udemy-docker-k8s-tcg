@@ -9,7 +9,7 @@
 
 _PLEASE NOTE THAT THIS Fibonacci Calc APPLICATION AS PER THE COURSE HAS SERIOUS IMPLEMENTATION LIMITATIONS AND FLAWS. THESE WERE NOT FIXED IN THE REPLAY ON THIS PROJECT._
 
-_ADDITONALLY, IT DOES NOT SPORT ANY TESTS THAT MAKE CONFIDENT THE APPLICATION OR THE DEPLOYMENT IS RUNNING PROPERLY._
+_ADDITONALLY, IT DOES NOT SPORT ANY TESTS THAT MAKE CONFIDENT THE APPLICATION, OR THE DEPLOYMENT, IS RUNNING PROPERLY._
 
 _LAST OBSERVATION TO BE RUNNING WERE ON MINIKUBE 1.9.2._
 
@@ -23,9 +23,9 @@ BUT, WELL, THE IMPLEMENTATION IS ... SEE ABOVE.
 
 This app calculates fibonacci numbers for indices between 1 and 40.
 
-It provides a browser based interface for input of index and displaying the then calculated fibonacci number.
+It provides a browser based interface for input of index (GUI section "Enter your index") and displaying the then calculated fibonacci number (GUI section "Calculated values").
 
-The calculation of fibonacci numbers is - for the sake of making the application technically more interesting - deemed resource intensive. Therefore the application saves seen indices into a database and seen indices plus it's fibonacci number in a key-value store.
+The calculation of fibonacci numbers is - for the sake of making the application technically more interesting - deemed resource intensive. Therefore the application saves seen indices into a database (GUI section "Indexes I have seen") and seen indices plus it's fibonacci number in a key-value store(GUI section "Calculated values").
 
 Note that
 
@@ -35,7 +35,7 @@ Note that
 ## Project's Service Concept
 
 <img src="./docs/fibonacci-calc-devenv-concept.png" alt="Project's Dev Service Concept"
-	title="Project's Dev Service Concept Screenshot" width="1000" height="auto" />
+	title="Project's Dev Service Concept Screenshot" width="700" height="auto" />
 
 ## Project's Data Flow Concept
 
@@ -119,10 +119,10 @@ Then execute
 minikube dashboard
 ```
 
-<img src="./docs/fibonacci-calc-k8s-minikube-dashboard.png" alt="Minikube K8s Dashboard"
-	title="Minikube K8s Dashboard" width="700" height="auto" />
-
 and enjoy, among other things, on checking for the well beeing of your Deployments, as well as the set up Secrets and Ingresses.
+
+<img src="./docs/fibonacci-calc-k8s-minikube-dashboard.png" alt="Minikube K8s Dashboard"
+	title="Minikube K8s Dashboard" width="1000" height="auto" />
 
 ### Pre-Setup For GCloud
 
@@ -189,7 +189,7 @@ helm install my-nginx stable/nginx-ingress --set rbac.create=true
 At the "Network services" menu on the GCP console, go to "Load balancer details". It shows the external IP:port available. One instance for each node.
 
 <img src="./docs/GCPLoadBalancerConfigAfterHelmIngressNginxSetup.png" alt="GCP load balancer configuration after setup via helm ingress-nginx"
-	title="GCP load balancer configuration after setup via helm ingress-nginx" width="1000" height="auto" />
+	title="GCP load balancer configuration after setup via helm ingress-nginx" width="700" height="auto" />
 
 ## Docker Compose Usage
 
@@ -213,19 +213,17 @@ After any of the above then open
 x-www-browser http://localhost:3050/
 ```
 
-## K8s Usage
+## K8s Usage For Production
 
-_Just in case, additionally to your minikube standard installation [Pre Setup For Minikube](#Pre-Setup-For-Minikube) is required._
+_Just in case, additionally to your minikube standard installation, [Pre Setup For Minikube](#Pre-Setup-For-Minikube) is required._
 
-Then start minikube via
+First start your minikube installation via
 
 ```sh
 minikube start
 ```
 
-### K8s Usage For Production
-
-To build and deploy the Fibonacci Calc application on minikube issue
+To build and deploy the Fibonacci Calc application on minikube, issue
 
 ```sh
 ./bin/up_minikube_prod.sh
