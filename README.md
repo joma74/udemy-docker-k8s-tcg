@@ -49,7 +49,8 @@ Note that
 
 ## Project's CI/CD Concept
 
-TBD Pic Project's CI/CD Concept Screenshot
+<img src="./docs/fibonacci-calc-travis-still.png" alt="Travis as CI/CD Hub"
+	title="Travis as CI/CD Hub" width="700" height="auto" />
 
 ## The Project's Target Environments
 
