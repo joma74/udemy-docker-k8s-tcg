@@ -31,6 +31,7 @@ Note that
 
 - Negative indices are let through. They are always responded with 1.
 - Numbers over 40 are rejected per the service with a 422, but this is not shown in the gui.
+- After input and submitting of a new index, you have to refresh your browser page manually to see the then updated content.
 
 ## Project's Service Concept
 
@@ -111,7 +112,6 @@ See https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/rewrit
 ```sh
 
 kubectl create secret generic pgauth --from-literal PGPASSWORD=pgpassword123
-minikube addons enable ingress
 ```
 
 Then execute
