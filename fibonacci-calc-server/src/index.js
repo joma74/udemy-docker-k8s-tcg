@@ -29,11 +29,17 @@ const pgDataSource = {
 
 debug("Connecting to postgres via %j", pgDataSource)
 const pgClient = new Pool(pgDataSource)
-pgClient.on("error", (err) => debug("Lost postgres connection %o", err))
+pgClient.on("error", (err) => {
+	debug("Lost postgres connection %o", err)
+	throw err
+})
 
 pgClient
 	.query("CREATE TABLE IF NOT EXISTS values (number INT)")
-	.catch((err) => debug("Could not create table %o", err))
+	.catch((err) => {
+		debug("Could not create table %o", err)
+		throw err
+	})
 
 // REDIS
 /**
@@ -57,7 +63,10 @@ server.get("/", (rq, rs) => {
 })
 server.get("/values/all", async (rq, rs) => {
 	debug("/values/all request recieved")
-	const values = await pgClient.query("Select * from values")
+	const values = await pgClient.query("Select * from values").catch((err) => {
+		debug("Could not select valuees %o", err)
+		throw err
+	})
 	rs.send(values.rows)
 })
 
@@ -77,7 +86,12 @@ server.post("/values", async (rq, rs) => {
 	}
 	redisCommander.hset("values", index, "Nothing yet!")
 	redisPublisher.publish("insert", index)
-	pgClient.query("INSERT INTO values(number) VALUES($1)", [index])
+	pgClient
+		.query("INSERT INTO values(number) VALUES($1)", [index])
+		.catch((err) => {
+			debug("Could not select valuees %o", err)
+			throw err
+		})
 
 	rs.send({ done: true })
 })
