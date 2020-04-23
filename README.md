@@ -59,12 +59,12 @@ This project supports building and running in the following environments
 
 - Build local on workstation and run local with Docker Compose
 - Build local on workstation and run local with K8s on Minikube
-- Build local on workstation and with K8s on GCloud
+- Build local on workstation and run with K8s on GCloud
 - Build on Travis CI and run with K8s on GCloud
 
 To support both Build local on workstation and Build on Travis CI in a as much as possible consistent manner, the project's env setup on Travis CI and K8s on GCloud be replicated onto the workstation.
 
-## Travis-To-Local Environment
+### Travis-To-Local Environment
 
 The following command sources the env/global section of travis.yml to the local env
 
@@ -72,7 +72,7 @@ The following command sources the env/global section of travis.yml to the local 
 . ./bin/exporttravisenvglobaltolocalenv.sh
 ```
 
-## Travis-To-Local-With-GCP Environment
+### Travis-To-Local-With-GCP Environment
 
 The following commands
 
@@ -88,26 +88,20 @@ The following commands
 
 ### Pre-Setup For Minikube
 
-At first, do
+After installation or upgrade of minikube, execute
 
 ```sh
 minikube start
 ```
 
-Then, to setup nginx as ingress on minikube, see https://kubernetes.github.io/ingress-nginx/deploy/#minikube for installation
+Then, to setup and upgrade nginx as ingress on minikube, see https://kubernetes.github.io/ingress-nginx/deploy/#minikube for installation
 
 ```sh
 $ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.30.0/deploy/static/mandatory.yaml
 $ minikube addons enable ingress
 ```
 
-See https://kubernetes.io/docs/concepts/services-networking/ingress/ for further configuration.abs
-
-In relation to the usage of rewrite-target note that
-
-> !!! attention Starting in Version 0.22.0, ingress definitions using the annotation nginx.ingress.kubernetes.io/rewrite-target are not backwards compatible with previous versions. In Version 0.22.0 and beyond, any substrings within the request URI that need to be passed to the rewritten path must explicitly be defined in a capture group.
-
-See https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/rewrite/README.md
+Next, execute
 
 ```sh
 
