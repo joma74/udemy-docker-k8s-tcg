@@ -114,7 +114,7 @@ Then execute
 minikube dashboard
 ```
 
-and enjoy, among other things, on checking for the well beeing of your Deployments, as well as the set up Secrets and Ingresses.
+and enjoy, among other things, on checking for the well being of any upcoming Deployments, as well as the set up Secrets and Ingresses.
 
 <img src="./docs/fibonacci-calc-k8s-minikube-dashboard.png" alt="Minikube K8s Dashboard"
 	title="Minikube K8s Dashboard" width="1000" height="auto" />
