@@ -3,6 +3,35 @@
 <img src="./docs/fibonacci-calc-frontend-screenshot.png" alt="Project's Frontend Screenshot"
 	title="Project's Frontend Screenshot" width="1000" height="auto" />
 
+## DISCLAIMER
+
+![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
+
+_PLEASE NOTE THAT THIS Fibonacci Calc APPLICATION AS PER THE COURSE HAS SERIOUS IMPLEMENTATION LIMITATIONS AND FLAWS. THESE WERE NOT FIXED IN THE REPLAY ON THIS PROJECT._
+
+_ADDITONALLY, IT DOES NOT SPORT ANY TESTS THAT MAKE CONFIDENT THE APPLICATION OR THE DEPLOYMENT IS RUNNING PROPERLY._
+
+_LAST OBSERVATION TO BE RUNNING WERE ON MINIKUBE 1.9.2._
+
+![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
+
+STILL, I RATED THIS COURSE WITH 5 STARS ON UDEMY. BECAUSE OF IT'S WIDE RANGE OF ENVIRONMENTS, GOING FROM NOOB TO BEGINNER IN ALL THAT, AND PROVIDES A QUITE NOT SIMPLE APPLICATION SCENARIO.
+
+BUT, WELL, THE IMPLEMENTATION IS ... SEE ABOVE.
+
+## What Does This Fibonacci Calc App Do?
+
+This app calculates fibonacci numbers for indices between 1 and 40.
+
+It provides a browser based interface for input of index and displaying the then calculated fibonacci number.
+
+The calculation of fibonacci numbers is - for the sake of making the application technically more interesting - deemed resource intensive. Therefore the application saves seen indices into a database and seen indices plus it's fibonacci number in a key-value store.
+
+Note that
+
+- Negative indices are let through. They are always responded with 1.
+- Numbers over 40 are rejected per the service with a 422, but this is not shown in the gui.
+
 ## Project's Service Concept
 
 <img src="./docs/fibonacci-calc-devenv-concept.png" alt="Project's Dev Service Concept"
@@ -13,7 +42,27 @@
 <img src="./docs/fibonacci-calc-flow-concept.png" alt="Project's Flow Concept"
 	title="Project's Flow Concept Screenshot" width="700" height="auto" />
 
-## Travis-To-Local Usage
+## Project's K8s Concept
+
+<img src="./docs/fibonacci-calc-k8s-concept.png" alt="Project's K8s Concept"
+	title="Project's K8s Concept Screenshot" width="700" height="auto" />
+
+## Project's CI/CD Concept
+
+TBD Pic Project's CI/CD Concept Screenshot
+
+## The Project's Target Environments
+
+This project supports building and running in the following environments
+
+- Build local on workstation and run local with Docker Compose
+- Build local on workstation and run local with K8s on Minikube
+- Build local on workstation and with K8s on GCloud
+- Build on Travis CI and run with K8s on GCloud
+
+To support both Build local on workstation and Build on Travis CI in a as much as possible consistent manner, the project's env setup on Travis CI and K8s on GCloud be replicated onto the workstation.
+
+## Travis-To-Local Environment
 
 The following command sources the env/global section of travis.yml to the local env
 
@@ -21,11 +70,11 @@ The following command sources the env/global section of travis.yml to the local 
 . ./bin/exporttravisenvglobaltolocalenv.sh
 ```
 
-## Travis-To-Local-With-GCP Usage
+## Travis-To-Local-With-GCP Environment
 
 The following commands
 
-- source the env/global section of travis.yml to the local env
+- sources the env/global section of travis.yml to the local env
 - configures the gcloud to access the GCP
 
 ```sh
@@ -33,21 +82,51 @@ The following commands
 ./bin/configgcloudaccess.sh
 ```
 
-## K8s Usage
+## Pre-Setups
 
-### On Minikube
+### Pre-Setup For Minikube
 
-Then open
+At first, do
 
 ```sh
-x-www-browser http://$(minikube ip)
+minikube start
 ```
 
-### On GCloud
+Then, to setup nginx as ingress on minikube, see https://kubernetes.github.io/ingress-nginx/deploy/#minikube for installation
 
-#### GCloud Pre-Setup
+```sh
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.30.0/deploy/static/mandatory.yaml
+$ minikube addons enable ingress
+```
 
-Diffed to what is mentioned in [README of https://github.com/joma74/udemy-docker-k8s-tcg/tree/workflow-d-frontend](https://github.com/joma74/udemy-docker-k8s-tcg/tree/workflow-d-frontend#read-all-the-good-things-for-google-cloud-run) one has to setup a gcloud travid-deployer account and produce the travis encoded gcloud travid-deployer credential file.
+See https://kubernetes.io/docs/concepts/services-networking/ingress/ for further configuration.abs
+
+In relation to the usage of rewrite-target note that
+
+> !!! attention Starting in Version 0.22.0, ingress definitions using the annotation nginx.ingress.kubernetes.io/rewrite-target are not backwards compatible with previous versions. In Version 0.22.0 and beyond, any substrings within the request URI that need to be passed to the rewritten path must explicitly be defined in a capture group.
+
+See https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/rewrite/README.md
+
+```sh
+
+kubectl create secret generic pgauth --from-literal PGPASSWORD=pgpassword123
+minikube addons enable ingress
+```
+
+Then execute
+
+```sh
+minikube dashboard
+```
+
+<img src="./docs/fibonacci-calc-k8s-minikube-dashboard.png" alt="Minikube K8s Dashboard"
+	title="Minikube K8s Dashboard" width="700" height="auto" />
+
+and enjoy, among other things, on checking for the well beeing of your Deployments, as well as the set up Secrets and Ingresses.
+
+### Pre-Setup For GCloud
+
+Diffed to what is mentioned in [README of https://github.com/joma74/udemy-docker-k8s-tcg/tree/workflow-d-frontend](https://github.com/joma74/udemy-docker-k8s-tcg/tree/workflow-d-frontend#read-all-the-good-things-for-google-cloud-run) one has to additionally setup a gcloud `travisci-deployer` account and produce the travis encoded gcloud `travisci-deployer` credential file.
 
 ```sh
 export HISTFILE=~/.bash_history_udemy-docker-k8s-tcg-2
@@ -71,13 +150,15 @@ travis encrypt-file --org travisci-deployer_udemy-docker-k8s-tcg-2_key.json
 history -a
 ```
 
-References
+References for this art are
 
 - See [https://github.com/joma74/udemy-docker-k8s-tcg/tree/workflow-d-frontend](https://github.com/joma74/udemy-docker-k8s-tcg/tree/workflow-d-frontend#read-all-the-good-things-for-google-cloud-run)
 - See https://www.juandebravo.com/2019/03/01/travis-google-kubernetes-engine-deployment/
 - See https://github.com/juandebravo/travis-google-kubernetes-engine
 
-## Helm Setup
+_P.S. If one wonders what the `?` - like in `${SVCACCT_EMAIL?}` - does, then read https://www.tldp.org/LDP/abs/html/parameter-substitution.html#QERRMSG._
+
+### Pre-Setup For Helm On GCloud
 
 See https://helm.sh/docs/intro/install/, section "From Script".
 
@@ -97,7 +178,7 @@ Hang tight while we grab the latest from your chart repositories...
 Update Complete. ⎈ Happy Helming!⎈
 ```
 
-## Install K8s Ingress-Nginx Via Helm
+### Pre-Setup Install K8s Ingress-Nginx Via Helm On GCloud
 
 See https://kubernetes.github.io/ingress-nginx/deploy/#using-helm.
 
@@ -112,15 +193,13 @@ At the "Network services" menu on the GCP console, go to "Load balancer details"
 
 ## Docker Compose Usage
 
-Inside fibonacci-calc-parent either do
-
-for production
+### Docker Compose Usage For Production
 
 ```sh
 ./bin/up_compose_prod.sh
 ```
 
-for development
+### Docker Compose Usage For Development
 
 ```sh
 ./bin/up_compose_dev.sh
@@ -134,121 +213,49 @@ After any of the above then open
 x-www-browser http://localhost:3050/
 ```
 
-## Project's K8s Concept
+## K8s Usage
 
-<img src="./docs/fibonacci-calc-k8s-concept.png" alt="Project's K8s Concept"
-	title="Project's K8s Concept Screenshot" width="700" height="auto" />
+_Just in case, additionally to your minikube standard installation [Pre Setup For Minikube](#Pre-Setup-For-Minikube) is required._
 
-## Project's CI/CD Concept
-
-TBD Pic Project's CI/CD Concept Screenshot
-
-## K8s Build Commands
-
-### For Production
+Then start minikube via
 
 ```sh
-docker pull redis:latest
-docker image tag redis:latest joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/redis/prod
+minikube start
 ```
+
+### K8s Usage For Production
+
+To build and deploy the Fibonacci Calc application on minikube issue
 
 ```sh
-docker pull postgres:latest
-docker image tag postgres:latest joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/postgres/prod
+./bin/up_minikube_prod.sh
 ```
+
+This script does the following
+
+- prepares appropriate env variables
+- makes the minikube's docker registry available as target for the to-be built images
+- builds the images in variant for production
+- executes kubectl commands
+- rolls out the deployments
+
+Then, to open the Fibonacci Calc application in your browser, do
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/frontend/prod -f fibonacci-calc-frontend/Dockerfile fibonacci-calc-frontend/
+x-www-browser http://$(minikube ip)
 ```
+
+To get a K8s GUI dashboard overview over the Fibonacci Calc application, do
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/server/prod -f fibonacci-calc-server/Dockerfile fibonacci-calc-server/
+minikube dashboard
 ```
+
+Later you can stop minikube via
 
 ```sh
-docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/worker/prod -f fibonacci-calc-worker/Dockerfile fibonacci-calc-worker/
+minikube stop
 ```
-
-```sh
-docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/prox/prod -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
-```
-
-### For Development
-
-```sh
-docker pull redis:latest
-docker image tag redis:latest joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/redis/dev
-```
-
-```sh
-docker pull postgres:latest
-docker image tag postgres:latest joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/postgres/dev
-```
-
-```sh
-docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/frontend/dev -f fibonacci-calc-frontend/Dockerfile.dev fibonacci-calc-frontend/
-```
-
-```sh
-docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/server/dev -f fibonacci-calc-server/Dockerfile.dev fibonacci-calc-server/
-```
-
-```sh
-docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/worker/dev -f fibonacci-calc-worker/Dockerfile.dev fibonacci-calc-worker/
-```
-
-```sh
-docker build -t joma74/udemy-docker-k8s-tcg-2/fibonacci-calc/proxy/dev -f fibonacci-calc-proxy/Dockerfile fibonacci-calc-proxy/
-```
-
-## Update A K8s Deployment With New Images For Development
-
-To update a deployment with new images to K8s is unneccessary hard. One must first be aware that the docker image cache against one builds on standard dev/user login is - at least when virtualized - NOT the same as the docker image cache on the virtualized host where K8s runs.
-
-For that executing `eval $(minikube docker-env)` changes the appropriate environment variables in one's shell. So, after doing that, a `docker build -t ...` command will put the image inside of that cache where K8s on the virtualized host can access them.
-
-Second step is to inform K8s that changes - in this case the undelying image - for deployments should be redeployed. For that one has to kick off a K8s' rollout command.
-See
-
-- https://stackoverflow.com/a/57559438
-- https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-restart-em-
-
-Unfortunately this additionally requires beforehand all deployments' configs to have an `imagePullPolicy: IfNotPresent` or `imagePullPolicy: Never` - to not fail on image pull from whatever external docker registry is set up in the first way.
-
-To sum up the canon is
-
-```sh
-eval $(minikube docker-env)
-docker build -t ...
-kubectl rollout restart deployment server-deployment # targeting an individual deployment
-# or
-kubectl rollout restart deployment  # targeting all deployments
-```
-
-## Check On Status Of Different K8s Objects
-
-```sh
-kubectl get deployments
-kubectl get pods
-kubectl get services
-kubectl get secrets
-kubectl describe ingress
-```
-
-## Ingress Nginx 0.30.0 Installation And Configuration
-
-See https://kubernetes.github.io/ingress-nginx/deploy/#minikube for installation
-
-```sh
-$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.30.0/deploy/static/mandatory.yaml
-$ minikube addons enable ingress
-```
-
-See https://kubernetes.io/docs/concepts/services-networking/ingress/ for configuration
-
-> !!! attention Starting in Version 0.22.0, ingress definitions using the annotation nginx.ingress.kubernetes.io/rewrite-target are not backwards compatible with previous versions. In Version 0.22.0 and beyond, any substrings within the request URI that need to be passed to the rewritten path must explicitly be defined in a capture group.
-
-See https://github.com/kubernetes/ingress-nginx/blob/master/docs/examples/rewrite/README.md
 
 ## Issue Parade
 
@@ -325,7 +332,31 @@ Finally, this command did remove the pv.
 kubectl delete persistentvolumes pvc-a9e657f3-d591-45c5-8faf-d6aa09cbd6e7
 ```
 
-## DNK
+## Did Not Know
+
+## Update A K8s Deployment With New Images For Development
+
+To update a deployment with new images to K8s is unneccessary hard. One must first be aware that the docker image cache against one builds on standard dev/user login is - at least when virtualized - NOT the same as the docker image cache on the virtualized host where K8s runs.
+
+For that executing `eval $(minikube docker-env)` changes the appropriate environment variables in one's shell. So, after doing that, a `docker build -t ...` command will put the image inside of that cache where K8s on the virtualized host can access them.
+
+Second step is to inform K8s that changes - in this case the undelying image - for deployments should be redeployed. For that one has to kick off a K8s' rollout command.
+See
+
+- https://stackoverflow.com/a/57559438
+- https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-em-restart-em-
+
+Unfortunately this additionally requires beforehand all deployments' configs to have an `imagePullPolicy: IfNotPresent` or `imagePullPolicy: Never` - to not fail on image pull from whatever external docker registry is set up in the first way.
+
+To sum up the canon is
+
+```sh
+eval $(minikube docker-env)
+docker build -t ...
+kubectl rollout restart deployment server-deployment # targeting an individual deployment
+# or
+kubectl rollout restart deployment  # targeting all deployments
+```
 
 ### How To Check Why Your Docker Container Gets OOM Killed
 
@@ -367,7 +398,7 @@ Going down that road one observes that that uid does not map to processes
 $ cat /sys/fs/cgroup/memory/kubepods/besteffort/pod9dc4d0c2-aab9-4ef9-94b5-fd8433ca094b/cgroup.procs
 ```
 
-But is contains two more uid's
+But it contains two more uid's
 
 ```sh
 $ ls /sys/fs/cgroup/memory/kubepods/besteffort/pod9dc4d0c2-aab9-4ef9-94b5-fd8433ca094b/
@@ -493,7 +524,7 @@ One must specify a environment variable of `POSTGRES_PASSWORD` on startup
 
 See https://github.com/docker-library/postgres/issues/456
 
-### Default Port Of React Dev Server
+### What Is The Default Port Of React Dev Server
 
 See https://create-react-app.dev/docs/advanced-configuration/
 
@@ -578,32 +609,19 @@ https://docs.docker.com/compose/reference/up/
                                data from the previous containers
 ```
 
-### K8s Pods vs Nodes
-
-<img src="./docs/NodeVsPodVs.svg" alt="K8s NodeVsPodVs" style="background-color: Snow;"
-	title="Project's K8s Concept Screenshot" width="700" height="auto" />
-
-A Pod can run one or more closely related containers.
-
-Pods run on Nodes.
-
-Each Node is managed by the Master. A Node is a worker machine in Kubernetes and may be a VM or a physical machine.
-
-### K8s Deployments vs Pods vs Services
-
-#### Services
+### K8s ClusterIP vs NodePort
 
 - ClusterIP: Exposes a set of pods to other objects in the cluster
 - NodePort: Exposes a set of pods to other objects outside of the cluster
 
-### K8s port vs targetPort vs nodePort vs containerPort
+### K8s nodePort vs port vs targetPort vs containerPort
 
 - nodePort: to access service from outside of the cluster [ Service/NodePort ]
 - port: to access service from inside of the cluster [ Service/NodePort, Service/ClusterIP ]
 - targetPort: where service runs inside [ Service/NodePort, Service/ClusterIP ]
 - containerPort: to access service from inside of the cluster [ Deployment/Containers ]
 
-### K8s ReplicaSet or replicas
+### K8s ReplicaSet Or Replicas
 
 - creates n replicated Pods, indicated by the replicas field
 
