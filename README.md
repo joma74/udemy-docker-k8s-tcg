@@ -609,9 +609,12 @@ https://docs.docker.com/compose/reference/up/
 
 ### K8s nodePort vs port vs targetPort vs containerPort
 
-- nodePort: to access service from outside of the cluster [ Service/NodePort ]
-- port: to access service from inside of the cluster [ Service/NodePort, Service/ClusterIP ]
-- targetPort: where service runs inside [ Service/NodePort, Service/ClusterIP ]
+<img src="./docs/ServiceNodePortPortTargetPort.png" alt="Node Port vs port vs targetPort on a Service"
+	title="Node Port vs port vs targetPort on a Service" width="700" height="auto" />
+
+- nodePort: to access service from outside of the cluster. If it is not given, it's value is set to some random value. Either way, the range of the value is only allowed within **30.000 and 32.767** [ Service/NodePort ]
+- port: to access service from inside of the cluster. Port is a/the only **mandatory** value [ Service/NodePort, Service/ClusterIP ]
+- targetPort: where the service runs inside. If it is not given, it's value is set to the value of the port. [ Service/NodePort, Service/ClusterIP ]
 - containerPort: to access service from inside of the cluster [ Deployment/Containers ]
 
 ### K8s ReplicaSet Or Replicas
