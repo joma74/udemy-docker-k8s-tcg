@@ -97,7 +97,7 @@ minikube start
 Then, to setup and upgrade nginx as ingress on minikube, see https://kubernetes.github.io/ingress-nginx/deploy/#minikube for installation
 
 ```sh
-$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/nginx-0.30.0/deploy/static/mandatory.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/baremetal/deploy.yaml
 $ minikube addons enable ingress
 ```
 
